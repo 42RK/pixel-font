@@ -1,357 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1-Bit Pixel Font Generator</title>
     <!-- Inter font for UI -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <!-- Pixel fonts for text generation -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans&family=VT323&family=DotGothic16&family=Fira+Code&family=IBM+Plex+Mono&family=Source+Code+Pro&family=Cutive+Mono&family=Inconsolata&family=Cousine&family=Bebas+Neue&family=Orbitron&family=Space+Mono&family=Fugaz+One&family=Roboto+Mono&family=Oswald&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans&family=VT323&family=DotGothic16&family=Fira+Code&family=IBM+Plex+Mono&family=Source+Code+Pro&family=Cutive+Mono&family=Inconsolata&family=Cousine&family=Bebas+Neue&family=Orbitron&family=Space+Mono&family=Fugaz+One&family=Roboto+Mono&family=Oswald&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: #1a1a1a;
-        color: #e0e0e0;
-        overflow: hidden; /* Prevent body scrolling */
-      }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #E0E0E0;
+            overflow: hidden; /* Prevent body scrolling */
+        }
 
-      /* Custom styling to match the dark theme */
-      .control-input {
-        background-color: #1a1a1a;
-        @apply text-white border-none rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200;
-      }
+        /* Custom styling to match the dark theme */
+        .control-input {
+            background-color: #1a1a1a;
+            @apply text-white border-none rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200;
+        }
 
-      .control-label {
-        @apply text-gray-300 font-semibold mb-1 block;
-      }
+        .control-label {
+            @apply text-gray-300 font-semibold mb-1 block;
+        }
 
-      .action-button {
-        @apply rounded-md font-bold px-6 py-3 transition-all duration-200;
-        position: relative;
-        overflow: hidden;
-      }
+        .action-button {
+            @apply rounded-md font-bold px-6 py-3 transition-all duration-200;
+            position: relative;
+            overflow: hidden;
+        }
 
-      /* Glowing effect */
-      .action-button::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 300%;
-        height: 300%;
-        background: rgba(255, 255, 255, 0.1);
-        transition: all 0.5s ease-in-out;
-        border-radius: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        z-index: 0;
-      }
+        /* Glowing effect */
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease-in-out;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 0;
+        }
 
-      .action-button:hover::before {
-        transform: translate(-50%, -50%) scale(1);
-      }
+        .action-button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
 
-      .action-button span {
-        position: relative;
-        z-index: 1;
-      }
+        .action-button span {
+            position: relative;
+            z-index: 1;
+        }
 
-      /* Essential for pixel-perfect scaling */
-      #previewCanvas {
-        image-rendering: pixelated;
-      }
+        /* Essential for pixel-perfect scaling */
+        #previewCanvas {
+            image-rendering: pixelated;
+        }
+        
+        /* Styling for the dropdown menu */
+        #fontSelect {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23E0E0E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 2.5rem;
+        }
 
-      /* Styling for the dropdown menu */
-      #fontSelect {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23E0E0E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        padding-right: 2.5rem;
-      }
+        .preview-grid-bg {
+            background-color: #f0f0f0;
+            background-image: linear-gradient(to right, #e5e5e5 1px, transparent 1px), linear-gradient(to bottom, #e5e5e5 1px, transparent 1px);
+            background-size: 8px 8px;
+        }
 
-      .preview-grid-bg {
-        background-color: #f0f0f0;
-        background-image: linear-gradient(
-            to right,
-            #e5e5e5 1px,
-            transparent 1px
-          ),
-          linear-gradient(to bottom, #e5e5e5 1px, transparent 1px);
-        background-size: 8px 8px;
-      }
+        /* Animation for pixel count update */
+        .flash-white {
+            animation: flash 0.5s ease-in-out;
+        }
+
+        @keyframes flash {
+            0% { color: #E0E0E0; }
+            50% { color: white; }
+            100% { color: #E0E0E0; }
+        }
     </style>
-  </head>
-  <body
-    class="bg-[#1a1a1a] text-white font-inter flex flex-col h-screen overflow-hidden"
-  >
+</head>
+<body class="bg-[#1a1a1a] text-white font-inter flex flex-col h-screen overflow-hidden">
+
     <!-- Control Panel at the top -->
     <div class="flex-shrink-0 bg-[#242424] p-8 shadow-lg w-full z-10">
-      <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6 text-center">
-          Pixel Font Generator
-        </h1>
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-6 text-center">Pixel Font Generator</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-          <!-- Text Input -->
-          <div class="md:col-span-2">
-            <label for="textInput" class="control-label">Text Input:</label>
-            <input
-              type="text"
-              id="textInput"
-              value="Hello, World!"
-              class="control-input"
-            />
-          </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                <!-- Text Input -->
+                <div class="md:col-span-2">
+                    <label for="textInput" class="control-label">Text Input:</label>
+                    <input type="text" id="textInput" value="Hello, World!" class="control-input">
+                </div>
+            
+                <!-- Font Selection -->
+                <div>
+                    <label for="fontSelect" class="control-label">Font Selection:</label>
+                    <select id="fontSelect" class="control-input">
+                        <option value="'VT323', monospace">VT323</option>
+                        <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
+                        <option value="'Space Mono', monospace">Space Mono</option>
+                        <option value="'Inconsolata', monospace">Inconsolata</option>
+                        <option value="'Cousine', monospace">Cousine</option>
+                        <option value="'Source Code Pro', monospace">Source Code Pro</option>
+                        <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                        <option value="'Fira Code', monospace">Fira Code</option>
+                        <option value="'Press Start 2P', cursive">Press Start 2P</option>
+                        <option value="'Pixelify Sans', sans-serif">Pixelify Sans</option>
+                        <option value="'DotGothic16', sans-serif">DotGothic16</option>
+                        <option value="'Cutive Mono', monospace">Cutive Mono</option>
+                        <option value="'Fugaz One', sans-serif">Fugaz One</option>
+                        <option value="'Orbitron', sans-serif">Orbitron</option>
+                        <option value="'Oswald', sans-serif">Oswald</option>
+                        <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
+                        <option value="monospace">Monospace (System)</option>
+                        <option value="Courier New, monospace">Courier New</option>
+                    </select>
+                </div>
+                
+                <!-- Font Height Input -->
+                <div>
+                    <label for="fontHeight" class="control-label">Font Height (pixels):</label>
+                    <input type="number" id="fontHeight" value="16" min="8" max="128" class="control-input">
+                </div>
+            </div>
 
-          <!-- Font Selection -->
-          <div>
-            <label for="fontSelect" class="control-label"
-              >Font Selection:</label
-            >
-            <select id="fontSelect" class="control-input">
-              <option value="'VT323', monospace">VT323</option>
-              <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
-              <option value="'Space Mono', monospace">Space Mono</option>
-              <option value="'Inconsolata', monospace">Inconsolata</option>
-              <option value="'Cousine', monospace">Cousine</option>
-              <option value="'Source Code Pro', monospace">
-                Source Code Pro
-              </option>
-              <option value="'Roboto Mono', monospace">Roboto Mono</option>
-              <option value="'Fira Code', monospace">Fira Code</option>
-              <option value="'Press Start 2P', cursive">Press Start 2P</option>
-              <option value="'Pixelify Sans', sans-serif">Pixelify Sans</option>
-              <option value="'DotGothic16', sans-serif">DotGothic16</option>
-              <option value="'Cutive Mono', monospace">Cutive Mono</option>
-              <option value="'Fugaz One', sans-serif">Fugaz One</option>
-              <option value="'Orbitron', sans-serif">Orbitron</option>
-              <option value="'Oswald', sans-serif">Oswald</option>
-              <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-              <option value="monospace">Monospace (System)</option>
-              <option value="Courier New, monospace">Courier New</option>
-            </select>
-          </div>
-
-          <!-- Font Height Input -->
-          <div>
-            <label for="fontHeight" class="control-label"
-              >Font Height (pixels):</label
-            >
-            <input
-              type="number"
-              id="fontHeight"
-              value="16"
-              min="8"
-              max="128"
-              class="control-input"
-            />
-          </div>
+            <!-- Download Button -->
+            <div class="mt-8 flex justify-center">
+                <button id="downloadBtn" class="action-button bg-green-600 hover:bg-green-700 text-white">
+                    <span>Generate & Save PNG</span>
+                </button>
+            </div>
+            
         </div>
-
-        <!-- Download Button -->
-        <div class="mt-8 flex justify-center">
-          <button
-            id="downloadBtn"
-            class="action-button bg-green-600 hover:bg-green-700 text-white"
-          >
-            <span>Generate & Save PNG</span>
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- Preview Area below -->
-    <div
-      class="relative flex-grow preview-grid-bg cursor-grab overflow-hidden flex items-center justify-center"
-    >
-      <canvas id="previewCanvas"></canvas>
-      <div
-        id="hintText"
-        class="absolute bottom-4 left-1/2 -translate-x-1/2 text-gray-400 text-sm opacity-100 transition-opacity duration-300 pointer-events-none"
-      >
-        Use mouse wheel to zoom. Click and drag to pan.
-      </div>
-      <div
-        id="pixelCount"
-        class="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-gray-400"
-      >
-        Pixel Count: 0
-      </div>
+    <div class="relative flex-grow preview-grid-bg cursor-grab overflow-hidden flex items-center justify-center">
+        <canvas id="previewCanvas"></canvas>
+        <div id="hintText" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-gray-400 text-sm opacity-100 transition-opacity duration-300 pointer-events-none">Use mouse wheel to zoom. Click and drag to pan.</div>
+        <div id="pixelCount" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-lg text-gray-400 font-semibold">Pixel Count: 0</div>
     </div>
 
     <script>
-      // Get references to all DOM elements
-      const textInput = document.getElementById("textInput");
-      const fontSelect = document.getElementById("fontSelect");
-      const fontHeightInput = document.getElementById("fontHeight");
-      const previewCanvas = document.getElementById("previewCanvas");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const hintText = document.getElementById("hintText");
-      const pixelCountText = document.getElementById("pixelCount");
-      const previewContainer = previewCanvas.parentElement;
+        // Get references to all DOM elements
+        const textInput = document.getElementById('textInput');
+        const fontSelect = document.getElementById('fontSelect');
+        const fontHeightInput = document.getElementById('fontHeight');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const hintText = document.getElementById('hintText');
+        const pixelCountText = document.getElementById('pixelCount');
+        const previewContainer = previewCanvas.parentElement;
 
-      // Create an offscreen canvas to handle the base text rendering
-      const offscreenCanvas = document.createElement("canvas");
-      const offscreenCtx = offscreenCanvas.getContext("2d");
-      const previewCtx = previewCanvas.getContext("2d");
+        // Create an offscreen canvas to handle the base text rendering
+        const offscreenCanvas = document.createElement('canvas');
+        const offscreenCtx = offscreenCanvas.getContext('2d');
+        const previewCtx = previewCanvas.getContext('2d');
 
-      let zoomLevel = 4; // Initial zoom level
-      const maxZoom = 10;
-      const minZoom = 1;
+        let zoomLevel = 4; // Initial zoom level
+        const maxZoom = 10;
+        const minZoom = 1;
+        
+        let panX = 0;
+        let panY = 0;
+        let isPanning = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
 
-      let panX = 0;
-      let panY = 0;
-      let isPanning = false;
-      let lastMouseX = 0;
-      let lastMouseY = 0;
+        // Function to draw text on the offscreen canvas
+        const renderOffscreenText = () => {
+            const text = textInput.value;
+            const fontStyle = fontSelect.value;
+            const fontHeight = parseInt(fontHeightInput.value, 10);
 
-      // Function to draw text on the offscreen canvas
-      const renderOffscreenText = () => {
-        const text = textInput.value;
-        const fontStyle = fontSelect.value;
-        const fontHeight = parseInt(fontHeightInput.value, 10);
+            // Set the font to measure dimensions accurately
+            offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
+            const textMetrics = offscreenCtx.measureText(text);
+            const textWidth = textMetrics.width;
+            const textHeight = fontHeight;
 
-        // Set the font to measure dimensions accurately
-        offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
-        const textMetrics = offscreenCtx.measureText(text);
-        const textWidth = textMetrics.width;
-        const textHeight = fontHeight;
+            const padding = 10;
+            offscreenCanvas.width = Math.max(1, textWidth + padding * 2);
+            offscreenCanvas.height = Math.max(1, textHeight + padding * 2);
 
-        const padding = 10;
-        offscreenCanvas.width = Math.max(1, textWidth + padding * 2);
-        offscreenCanvas.height = Math.max(1, textHeight + padding * 2);
+            // Clear the offscreen canvas with a transparent background
+            offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
 
-        // Clear the offscreen canvas with a transparent background
-        offscreenCtx.clearRect(
-          0,
-          0,
-          offscreenCanvas.width,
-          offscreenCanvas.height
-        );
+            // Draw the text
+            offscreenCtx.fillStyle = 'black';
+            offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
+            offscreenCtx.fillText(text, padding, padding + textHeight * 0.75);
 
-        // Draw the text
-        offscreenCtx.fillStyle = "black";
-        offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
-        offscreenCtx.fillText(text, padding, padding + textHeight * 0.75);
+            // Convert to 1-bit: black or transparent
+            const imageData = offscreenCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+            const data = imageData.data;
+            let blackPixelCount = 0;
 
-        // Convert to 1-bit: black or transparent
-        const imageData = offscreenCtx.getImageData(
-          0,
-          0,
-          offscreenCanvas.width,
-          offscreenCanvas.height
-        );
-        const data = imageData.data;
-        let blackPixelCount = 0;
-
-        for (let i = 0; i < data.length; i += 4) {
-          // Check if the pixel is not fully transparent
-          if (data[i + 3] > 0) {
-            if (data[i] < 200) {
-              data[i] = 0;
-              data[i + 1] = 0;
-              data[i + 2] = 0;
-              data[i + 3] = 255;
-              blackPixelCount++;
-            } else {
-              data[i + 3] = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                // Check if the pixel is not fully transparent
+                if (data[i + 3] > 0) {
+                    if (data[i] < 200) {
+                        data[i] = 0;
+                        data[i + 1] = 0;
+                        data[i + 2] = 0;
+                        data[i + 3] = 255;
+                        blackPixelCount++;
+                    } else {
+                        data[i + 3] = 0;
+                    }
+                }
             }
-          }
-        }
-        offscreenCtx.putImageData(imageData, 0, 0);
+            offscreenCtx.putImageData(imageData, 0, 0);
 
-        pixelCountText.textContent = `Pixel Count: ${blackPixelCount}`;
-      };
+            // Update the pixel count display with flash animation
+            pixelCountText.textContent = `Pixel Count: ${blackPixelCount}`;
+            pixelCountText.classList.add('flash-white');
+            setTimeout(() => {
+                pixelCountText.classList.remove('flash-white');
+            }, 500); // Animation duration is 0.5s
+        };
 
-      // Function to render the visible canvas with pan and zoom
-      const drawPreview = () => {
-        const containerWidth = previewContainer.offsetWidth;
-        const containerHeight = previewContainer.offsetHeight;
+        // Function to render the visible canvas with pan and zoom
+        const drawPreview = () => {
+            const containerWidth = previewContainer.offsetWidth;
+            const containerHeight = previewContainer.offsetHeight;
 
-        previewCanvas.width = containerWidth;
-        previewCanvas.height = containerHeight;
+            previewCanvas.width = containerWidth;
+            previewCanvas.height = containerHeight;
+            
+            // Clear the preview canvas
+            previewCtx.clearRect(0, 0, containerWidth, containerHeight);
+            previewCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
 
-        // Clear the preview canvas
-        previewCtx.clearRect(0, 0, containerWidth, containerHeight);
-        previewCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
+            // Apply transformations
+            previewCtx.save();
+            previewCtx.translate(panX, panY);
+            previewCtx.scale(zoomLevel, zoomLevel);
 
-        // Apply transformations
-        previewCtx.save();
-        previewCtx.translate(panX, panY);
-        previewCtx.scale(zoomLevel, zoomLevel);
+            // Draw the offscreen canvas content onto the preview canvas
+            previewCtx.drawImage(offscreenCanvas, 0, 0);
+            previewCtx.restore();
+        };
 
-        // Draw the offscreen canvas content onto the preview canvas
-        previewCtx.drawImage(offscreenCanvas, 0, 0);
-        previewCtx.restore();
-      };
+        const handleWheel = (event) => {
+            event.preventDefault(); // Prevent page scrolling
+            hintText.classList.add('hidden');
+            
+            const oldZoom = zoomLevel;
+            if (event.deltaY < 0) {
+                zoomLevel = Math.min(zoomLevel + 1, maxZoom);
+            } else {
+                zoomLevel = Math.max(zoomLevel - 1, minZoom);
+            }
 
-      const handleWheel = (event) => {
-        event.preventDefault(); // Prevent page scrolling
-        hintText.classList.add("hidden");
+            // Recalculate pan to keep the point under the cursor in the same location
+            const containerRect = previewContainer.getBoundingClientRect();
+            const mouseX = event.clientX - containerRect.left;
+            const mouseY = event.clientY - containerRect.top;
 
-        const oldZoom = zoomLevel;
-        if (event.deltaY < 0) {
-          zoomLevel = Math.min(zoomLevel + 1, maxZoom);
-        } else {
-          zoomLevel = Math.max(zoomLevel - 1, minZoom);
-        }
+            panX = mouseX - (mouseX - panX) * (zoomLevel / oldZoom);
+            panY = mouseY - (mouseY - panY) * (zoomLevel / oldZoom);
 
-        // Recalculate pan to keep the point under the cursor in the same location
-        const containerRect = previewContainer.getBoundingClientRect();
-        const mouseX = event.clientX - containerRect.left;
-        const mouseY = event.clientY - containerRect.top;
+            drawPreview();
+        };
 
-        panX = mouseX - (mouseX - panX) * (zoomLevel / oldZoom);
-        panY = mouseY - (mouseY - panY) * (zoomLevel / oldZoom);
+        const handleMouseDown = (event) => {
+            isPanning = true;
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
+            previewContainer.style.cursor = 'grabbing';
+            hintText.classList.add('hidden');
+        };
 
-        drawPreview();
-      };
+        const handleMouseMove = (event) => {
+            if (!isPanning) return;
+            
+            const dx = event.clientX - lastMouseX;
+            const dy = event.clientY - lastMouseY;
+            
+            panX += dx;
+            panY += dy;
+            
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
+            
+            drawPreview();
+        };
 
-      const handleMouseDown = (event) => {
-        isPanning = true;
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
-        previewContainer.style.cursor = "grabbing";
-        hintText.classList.add("hidden");
-      };
+        const handleMouseUp = () => {
+            isPanning = false;
+            previewContainer.style.cursor = 'grab';
+        };
 
-      const handleMouseMove = (event) => {
-        if (!isPanning) return;
-
-        const dx = event.clientX - lastMouseX;
-        const dy = event.clientY - lastMouseY;
-
-        panX += dx;
-        panY += dy;
-
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
-
-        drawPreview();
-      };
-
-      const handleMouseUp = () => {
-        isPanning = false;
-        previewContainer.style.cursor = "grab";
-      };
-
-      // Function to download the canvas as a PNG
-      const downloadImage = () => {
-        if (textInput.value.trim() === "") {
-          const messageBox = document.createElement("div");
-          messageBox.style.cssText = `
+        // Function to download the canvas as a PNG
+        const downloadImage = () => {
+            if (textInput.value.trim() === '') {
+                const messageBox = document.createElement('div');
+                messageBox.style.cssText = `
                     position: fixed;
                     top: 50%;
                     left: 50%;
@@ -364,69 +324,58 @@
                     z-index: 1000;
                     text-align: center;
                 `;
-          messageBox.innerHTML = `<p>Please enter some text to generate an image.</p><button onclick="this.parentNode.remove()" style="margin-top: 10px; padding: 5px 10px; background-color: #555; color: white; border: none; border-radius: 4px;">OK</button>`;
-          document.body.appendChild(messageBox);
-          return;
-        }
+                messageBox.innerHTML = `<p>Please enter some text to generate an image.</p><button onclick="this.parentNode.remove()" style="margin-top: 10px; padding: 5px 10px; background-color: #555; color: white; border: none; border-radius: 4px;">OK</button>`;
+                document.body.appendChild(messageBox);
+                return;
+            }
 
-        // Use the offscreen canvas for download to ensure original quality
-        const link = document.createElement("a");
-        link.download = `pixel_font_${textInput.value.replace(
-          /[^a-zA-Z0-9]/g,
-          "_"
-        )}.png`;
-        link.href = offscreenCanvas.toDataURL("image/png");
-        link.click();
-      };
+            // Use the offscreen canvas for download to ensure original quality
+            const link = document.createElement('a');
+            link.download = `pixel_font_${textInput.value.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+            link.href = offscreenCanvas.toDataURL('image/png');
+            link.click();
+        };
+        
+        // Event listeners for user input
+        textInput.addEventListener('input', () => {
+            renderOffscreenText();
+            drawPreview();
+        });
+        fontSelect.addEventListener('change', () => {
+            renderOffscreenText();
+            drawPreview();
+        });
+        fontHeightInput.addEventListener('input', () => {
+            renderOffscreenText();
+            drawPreview();
+        });
+        downloadBtn.addEventListener('click', downloadImage);
+        
+        // Panning event listeners
+        previewContainer.addEventListener('mousedown', handleMouseDown);
+        previewContainer.addEventListener('mousemove', handleMouseMove);
+        previewContainer.addEventListener('mouseup', handleMouseUp);
+        previewContainer.addEventListener('mouseleave', handleMouseUp);
 
-      // Event listeners for user input
-      textInput.addEventListener("input", () => {
-        renderOffscreenText();
-        drawPreview();
-      });
-      fontSelect.addEventListener("change", () => {
-        renderOffscreenText();
-        drawPreview();
-      });
-      fontHeightInput.addEventListener("input", () => {
-        renderOffscreenText();
-        drawPreview();
-      });
-      downloadBtn.addEventListener("click", downloadImage);
+        // Zoom event listener
+        previewContainer.addEventListener('wheel', handleWheel);
 
-      // Panning event listeners
-      previewContainer.addEventListener("mousedown", handleMouseDown);
-      previewContainer.addEventListener("mousemove", handleMouseMove);
-      previewContainer.addEventListener("mouseup", handleMouseUp);
-      previewContainer.addEventListener("mouseleave", handleMouseUp);
+        // Responsive drawing on resize
+        window.addEventListener('resize', () => {
+            // Re-center the view on resize
+            panX = (previewContainer.offsetWidth / 2) - (offscreenCanvas.width * zoomLevel / 2);
+            panY = (previewContainer.offsetHeight / 2) - (offscreenCanvas.height * zoomLevel / 2);
+            drawPreview();
+        });
 
-      // Zoom event listener
-      previewContainer.addEventListener("wheel", handleWheel);
-
-      // Responsive drawing on resize
-      window.addEventListener("resize", () => {
-        // Re-center the view on resize
-        panX =
-          previewContainer.offsetWidth / 2 -
-          (offscreenCanvas.width * zoomLevel) / 2;
-        panY =
-          previewContainer.offsetHeight / 2 -
-          (offscreenCanvas.height * zoomLevel) / 2;
-        drawPreview();
-      });
-
-      // Initial setup and draw on page load
-      window.addEventListener("load", () => {
-        renderOffscreenText();
-        // Initial centering
-        panX =
-          previewContainer.offsetWidth / 2 -
-          (offscreenCanvas.width * zoomLevel) / 2;
-        panY =
-          previewContainer.offsetHeight / 2 -
-          (offscreenCanvas.height * zoomLevel) / 2;
-        drawPreview();
-      });
+        // Initial setup and draw on page load
+        window.addEventListener('load', () => {
+            renderOffscreenText();
+            // Initial centering
+            panX = (previewContainer.offsetWidth / 2) - (offscreenCanvas.width * zoomLevel / 2);
+            panY = (previewContainer.offsetHeight / 2) - (offscreenCanvas.height * zoomLevel / 2);
+            drawPreview();
+        });
     </script>
-  </body>
+</body>
 </html>
