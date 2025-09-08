@@ -81,15 +81,25 @@
             background-size: 8px 8px;
         }
 
-        /* Animation for pixel count update */
-        .flash-white {
-            animation: flash 0.5s ease-in-out;
+        /* Animations for pixel count update */
+        .flash-green {
+            animation: flash-green 0.5s ease-in-out forwards;
         }
 
-        @keyframes flash {
-            0% { color: #E0E0E0; }
-            50% { color: white; }
-            100% { color: #E0E0E0; }
+        .flash-red {
+            animation: flash-red 0.5s ease-in-out forwards;
+        }
+
+        @keyframes flash-green {
+            0% { color: #4b5563; }
+            50% { color: #22c55e; }
+            100% { color: #4b5563; }
+        }
+
+        @keyframes flash-red {
+            0% { color: #4b5563; }
+            50% { color: #ef4444; }
+            100% { color: #4b5563; }
         }
     </style>
 </head>
@@ -152,8 +162,8 @@
     <!-- Preview Area below -->
     <div class="relative flex-grow preview-grid-bg cursor-grab overflow-hidden flex items-center justify-center">
         <canvas id="previewCanvas"></canvas>
-        <div id="hintText" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-400 text-base opacity-100 transition-opacity duration-300 pointer-events-none">Use mouse wheel to zoom. Click and drag to pan.</div>
-        <div id="pixelCount" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-lg text-gray-400 font-semibold">Pixel Count: 0</div>
+        <div id="hintText" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 text-base opacity-100 transition-opacity duration-300 pointer-events-none">Use mouse wheel to zoom. Click and drag to pan.</div>
+        <div id="pixelCount" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xl text-gray-500 font-semibold">Pixel Count: 0</div>
     </div>
 
     <script>
@@ -181,6 +191,7 @@
         let isPanning = false;
         let lastMouseX = 0;
         let lastMouseY = 0;
+        let lastPixelCount = 0;
 
         // Function to draw text on the offscreen canvas
         const renderOffscreenText = () => {
@@ -227,12 +238,19 @@
             }
             offscreenCtx.putImageData(imageData, 0, 0);
 
-            // Update the pixel count display with flash animation
+            // Update the pixel count display with color flash animation
             pixelCountText.textContent = `Pixel Count: ${blackPixelCount}`;
-            pixelCountText.classList.add('flash-white');
-            setTimeout(() => {
-                pixelCountText.classList.remove('flash-white');
-            }, 500); // Animation duration is 0.5s
+            pixelCountText.classList.remove('flash-red', 'flash-green');
+
+            // Force reflow to restart the animation
+            void pixelCountText.offsetWidth; 
+
+            if (blackPixelCount > lastPixelCount) {
+                pixelCountText.classList.add('flash-red');
+            } else if (blackPixelCount < lastPixelCount) {
+                pixelCountText.classList.add('flash-green');
+            }
+            lastPixelCount = blackPixelCount;
         };
 
         // Function to render the visible canvas with pan and zoom
