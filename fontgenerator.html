@@ -1,335 +1,860 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>1-Bit Pixel Font Generator</title>
     <!-- Inter font for UI -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- Pixel fonts for text generation -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans&family=VT323&family=DotGothic16&family=Fira+Code&family=IBM+Plex+Mono&family=Source+Code+Pro&family=Cutive+Mono&family=Inconsolata&family=Cousine&family=Bebas+Neue&family=Orbitron&family=Space+Mono&family=Fugaz+One&family=Roboto+Mono&family=Oswald&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans&family=VT323&family=DotGothic16&family=Fira+Code&family=IBM+Plex+Mono&family=Source+Code+Pro&family=Cutive+Mono&family=Inconsolata&family=Cousine&family=Bebas+Neue&family=Orbitron&family=Space+Mono&family=Fugaz+One&family=Roboto+Mono&family=Oswald&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a1a1a;
-            color: #E0E0E0;
-            overflow: hidden; /* Prevent body scrolling */
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+        overflow: hidden; /* Prevent body scrolling */
+      }
 
-        /* Custom styling to match the dark theme */
-        .control-input {
-            background-color: #1a1a1a;
-            @apply text-white border-none rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200;
-        }
+      /* Custom styling to match the dark theme */
+      .control-input {
+        background-color: #1a1a1a;
+        @apply text-white border-2 border-transparent rounded-md p-3 w-full focus:outline-none focus:border-blue-500 transition-all duration-200;
+      }
 
-        .control-label {
-            @apply text-gray-300 font-semibold mb-1 block;
-        }
+      .control-label {
+        @apply text-gray-300 font-semibold mb-1 block;
+      }
 
-        .action-button {
-            @apply rounded-md font-bold px-6 py-3 transition-all duration-200;
-            position: relative;
-            overflow: hidden;
-        }
+      .action-button {
+        @apply rounded-md font-bold px-6 py-3 transition-all duration-200;
+        position: relative;
+        overflow: hidden;
+      }
 
-        /* Glowing effect */
-        .action-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300%;
-            height: 300%;
-            background: rgba(255, 255, 255, 0.1);
-            transition: all 0.5s ease-in-out;
-            border-radius: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            z-index: 0;
-        }
+      /* Glowing effect */
+      .action-button::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.5s ease-in-out;
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        z-index: 0;
+      }
 
-        .action-button:hover::before {
-            transform: translate(-50%, -50%) scale(1);
-        }
+      .action-button:hover::before {
+        transform: translate(-50%, -50%) scale(1);
+      }
 
-        .action-button span {
-            position: relative;
-            z-index: 1;
-        }
+      .action-button span {
+        position: relative;
+        z-index: 1;
+      }
 
-        /* Essential for pixel-perfect scaling */
-        #previewCanvas {
-            image-rendering: pixelated;
-        }
-        
-        /* Styling for the dropdown menu */
-        #fontSelect {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23E0E0E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            padding-right: 2.5rem;
-        }
+      /* Essential for pixel-perfect scaling */
+      #previewCanvas {
+        image-rendering: pixelated;
+      }
 
-        .preview-grid-bg {
-            background-color: #f0f0f0;
-            background-image: linear-gradient(to right, #e5e5e5 1px, transparent 1px), linear-gradient(to bottom, #e5e5e5 1px, transparent 1px);
-            background-size: 8px 8px;
-        }
+      /* Styling for the dropdown menu */
+      #fontSelect {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23E0E0E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        padding-right: 2.5rem;
+      }
 
-        /* Animations for pixel count update */
-        .flash-green {
-            animation: flash-green 0.5s ease-in-out forwards;
-        }
+      /* Animations for pixel count update */
+      .flash-green {
+        animation: flash-green 0.5s ease-in-out forwards;
+      }
 
-        .flash-red {
-            animation: flash-red 0.5s ease-in-out forwards;
-        }
+      .flash-red {
+        animation: flash-red 0.5s ease-in-out forwards;
+      }
 
-        @keyframes flash-green {
-            0% { color: #4b5563; }
-            50% { color: #22c55e; }
-            100% { color: #4b5563; }
+      @keyframes flash-green {
+        0% {
+          color: #4b5563;
         }
+        50% {
+          color: #22c55e;
+        }
+        100% {
+          color: #4b5563;
+        }
+      }
 
-        @keyframes flash-red {
-            0% { color: #4b5563; }
-            50% { color: #ef4444; }
-            100% { color: #4b5563; }
+      @keyframes flash-red {
+        0% {
+          color: #4b5563;
         }
+        50% {
+          color: #ef4444;
+        }
+        100% {
+          color: #4b5563;
+        }
+      }
     </style>
-</head>
-<body class="bg-[#1a1a1a] text-white font-inter flex flex-col h-screen overflow-hidden">
-
+  </head>
+  <body
+    class="bg-[#1a1a1a] text-white font-inter flex flex-col h-screen overflow-hidden"
+  >
     <!-- Control Panel at the top -->
     <div class="flex-shrink-0 bg-[#242424] p-8 shadow-lg w-full z-10">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-3xl font-bold mb-6 text-center">Pixel Font Generator</h1>
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-center">
+          Pixel Font Generator
+        </h1>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-                <!-- Text Input -->
-                <div class="md:col-span-2">
-                    <label for="textInput" class="control-label">Text Input:</label>
-                    <input type="text" id="textInput" value="Hello, World!" class="control-input">
-                </div>
-            
-                <!-- Font Selection -->
-                <div>
-                    <label for="fontSelect" class="control-label">Font Selection:</label>
-                    <select id="fontSelect" class="control-input">
-                        <option value="'VT323', monospace">VT323</option>
-                        <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
-                        <option value="'Space Mono', monospace">Space Mono</option>
-                        <option value="'Inconsolata', monospace">Inconsolata</option>
-                        <option value="'Cousine', monospace">Cousine</option>
-                        <option value="'Source Code Pro', monospace">Source Code Pro</option>
-                        <option value="'Roboto Mono', monospace">Roboto Mono</option>
-                        <option value="'Fira Code', monospace">Fira Code</option>
-                        <option value="'Press Start 2P', cursive">Press Start 2P</option>
-                        <option value="'Pixelify Sans', sans-serif">Pixelify Sans</option>
-                        <option value="'DotGothic16', sans-serif">DotGothic16</option>
-                        <option value="'Cutive Mono', monospace">Cutive Mono</option>
-                        <option value="'Fugaz One', sans-serif">Fugaz One</option>
-                        <option value="'Orbitron', sans-serif">Orbitron</option>
-                        <option value="'Oswald', sans-serif">Oswald</option>
-                        <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-                        <option value="monospace">Monospace (System)</option>
-                        <option value="Courier New, monospace">Courier New</option>
-                    </select>
-                </div>
-                
-                <!-- Font Height Input -->
-                <div>
-                    <label for="fontHeight" class="control-label">Font Height (pixels):</label>
-                    <input type="number" id="fontHeight" value="16" min="8" max="128" class="control-input">
-                </div>
-            </div>
-
-            <!-- Download Button -->
-            <div class="mt-8 flex justify-center">
-                <button id="downloadBtn" class="action-button bg-green-600 hover:bg-green-700 text-white">
-                    <span>Generate & Save PNG</span>
-                </button>
-            </div>
-            
+        <!-- Text Input remains full-width -->
+        <div class="mb-6 flex justify-center">
+          <div class="w-full">
+            <label for="textInput" class="control-label">Text Input:</label>
+            <textarea
+              id="textInput"
+              rows="3"
+              class="control-input resize-y text-center"
+            ></textarea>
+          </div>
         </div>
+
+        <!-- Controls are now stacked vertically -->
+        <div class="flex flex-col justify-center items-center gap-6">
+          <!-- Font Selection -->
+          <div class="w-full">
+            <label for="fontSelect" class="control-label"
+              >Font Selection:</label
+            >
+            <div class="flex items-center gap-2">
+              <button
+                id="prevFontBtn"
+                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-xl p-0 transition-all duration-200"
+              >
+                <span><</span>
+              </button>
+              <select id="fontSelect" class="control-input flex-grow">
+                <option value="custom-3x5-minifont">3x5 Minifont</option>
+                <option value="custom-font">3x3 Microfont (unicase)</option>
+                <option value="'VT323', monospace">VT323</option>
+                <option value="'IBM Plex Mono', monospace">
+                  IBM Plex Mono
+                </option>
+                <option value="'Space Mono', monospace">Space Mono</option>
+                <option value="'Inconsolata', monospace">Inconsolata</option>
+                <option value="'Cousine', monospace">Cousine</option>
+                <option value="'Source Code Pro', monospace">
+                  Source Code Pro
+                </option>
+                <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                <option value="'Fira Code', monospace">Fira Code</option>
+                <option value="'Press Start 2P', cursive">
+                  Press Start 2P
+                </option>
+                <option value="'Pixelify Sans', sans-serif">
+                  Pixelify Sans
+                </option>
+                <option value="'DotGothic16', sans-serif">DotGothic16</option>
+                <option value="'Cutive Mono', monospace">Cutive Mono</option>
+                <option value="'Fugaz One', sans-serif">Fugaz One</option>
+                <option value="'Orbitron', sans-serif">Orbitron</option>
+                <option value="'Oswald', sans-serif">Oswald</option>
+                <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
+                <option value="monospace">Monospace (System)</option>
+                <option value="Courier New, monospace">Courier New</option>
+              </select>
+              <button
+                id="nextFontBtn"
+                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-xl p-0 transition-all duration-200"
+              >
+                <span>></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Font Height Controls (New UI) -->
+          <div id="fontHeightControls" class="w-full">
+            <label for="fontHeight" class="control-label"
+              >Font Height (pixels):</label
+            >
+            <div class="flex items-center gap-2">
+              <button
+                id="decreaseSize"
+                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-2xl p-0 transition-all duration-200"
+              >
+                -
+              </button>
+              <span
+                id="fontHeightDisplay"
+                class="text-xl font-bold text-center w-20"
+                >16</span
+              >
+              <button
+                id="increaseSize"
+                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-2xl p-0 transition-all duration-200"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download Button -->
+        <div class="mt-8 flex justify-center">
+          <button
+            id="downloadBtn"
+            class="action-button bg-green-600 hover:bg-green-700 text-white w-full md:w-64 py-4 text-xl rounded-full"
+          >
+            <span>Generate & Save PNG</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Preview Area below -->
-    <div class="relative flex-grow preview-grid-bg cursor-grab overflow-hidden flex items-center justify-center">
-        <canvas id="previewCanvas"></canvas>
-        <div id="hintText" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 text-base opacity-100 transition-opacity duration-300 pointer-events-none">Use mouse wheel to zoom. Click and drag to pan.</div>
-        <div id="pixelCount" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xl text-gray-500 font-semibold">Pixel Count: 0</div>
+    <div
+      id="previewContainer"
+      class="relative flex-grow bg-white cursor-grab overflow-hidden flex items-center justify-center"
+    >
+      <canvas id="previewCanvas"></canvas>
+      <div
+        id="hintText"
+        class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 text-base opacity-100 transition-opacity duration-300 pointer-events-none"
+      >
+        Use mouse wheel to zoom. Click and drag to pan.
+      </div>
+      <div
+        id="pixelCount"
+        class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xl text-gray-500 font-semibold"
+      >
+        Pixel Count: 0
+      </div>
     </div>
 
     <script>
-        // Get references to all DOM elements
-        const textInput = document.getElementById('textInput');
-        const fontSelect = document.getElementById('fontSelect');
-        const fontHeightInput = document.getElementById('fontHeight');
-        const previewCanvas = document.getElementById('previewCanvas');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const hintText = document.getElementById('hintText');
-        const pixelCountText = document.getElementById('pixelCount');
-        const previewContainer = previewCanvas.parentElement;
+      // Custom font data provided by the user
+      const Microfont3x3 = {
+        0: [1, 1, 1, 1, 0, 1, 1, 1, 1],
+        1: [1, 1, 0, 0, 1, 0, 0, 1, 0],
+        2: [1, 1, 0, 0, 1, 0, 0, 1, 1],
+        3: [1, 1, 1, 0, 1, 1, 1, 1, 1],
+        4: [1, 0, 1, 1, 1, 1, 0, 0, 1],
+        5: [0, 1, 1, 0, 1, 0, 1, 1, 0],
+        6: [1, 0, 0, 1, 1, 1, 1, 1, 1],
+        7: [1, 1, 1, 0, 1, 1, 0, 0, 1],
+        8: [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        9: [1, 1, 1, 1, 1, 1, 0, 0, 1],
+        a: [0, 1, 1, 1, 1, 1, 1, 1, 1],
+        A: [0, 1, 1, 1, 1, 1, 1, 1, 1],
+        b: [1, 0, 0, 1, 1, 1, 1, 1, 1],
+        B: [1, 0, 0, 1, 1, 1, 1, 1, 1],
+        c: [1, 1, 1, 1, 0, 0, 1, 1, 1],
+        C: [1, 1, 1, 1, 0, 0, 1, 1, 1],
+        d: [0, 0, 1, 1, 1, 1, 1, 1, 1],
+        D: [0, 0, 1, 1, 1, 1, 1, 1, 1],
+        e: [1, 1, 1, 1, 1, 0, 1, 1, 1],
+        E: [1, 1, 1, 1, 1, 0, 1, 1, 1],
+        f: [1, 1, 1, 1, 1, 0, 1, 0, 0],
+        F: [1, 1, 1, 1, 1, 0, 1, 0, 0],
+        g: [1, 1, 0, 1, 1, 1, 1, 1, 1],
+        G: [1, 1, 0, 1, 1, 1, 1, 1, 1],
+        h: [1, 0, 1, 1, 1, 1, 1, 0, 1],
+        H: [1, 0, 1, 1, 1, 1, 1, 0, 1],
+        i: [1, 1, 1, 0, 1, 0, 1, 1, 1],
+        I: [1, 1, 1, 0, 1, 0, 1, 1, 1],
+        j: [1, 1, 1, 0, 1, 0, 1, 1, 0],
+        J: [1, 1, 1, 0, 1, 0, 1, 1, 0],
+        k: [1, 0, 1, 1, 1, 0, 1, 0, 1],
+        K: [1, 0, 1, 1, 1, 0, 1, 0, 1],
+        l: [1, 0, 0, 1, 0, 0, 1, 1, 1],
+        L: [1, 0, 0, 1, 0, 0, 1, 1, 1],
+        m: [1, 1, 1, 1, 1, 1, 1, 0, 1],
+        M: [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        n: [1, 1, 1, 1, 0, 1, 1, 0, 1],
+        N: [1, 1, 1, 1, 0, 1, 1, 0, 1],
+        o: [1, 1, 1, 1, 0, 1, 1, 1, 1],
+        O: [1, 1, 1, 1, 0, 1, 1, 1, 1],
+        p: [1, 1, 1, 1, 1, 1, 1, 0, 0],
+        P: [1, 1, 1, 1, 1, 1, 1, 0, 0],
+        q: [1, 1, 1, 1, 1, 1, 0, 0, 1],
+        Q: [1, 1, 1, 1, 1, 1, 0, 0, 1],
+        r: [1, 1, 1, 1, 1, 0, 1, 0, 1],
+        R: [1, 1, 1, 1, 1, 0, 1, 0, 1],
+        s: [0, 1, 1, 0, 1, 0, 1, 1, 0],
+        S: [0, 1, 1, 0, 1, 0, 1, 1, 0],
+        t: [1, 1, 1, 0, 1, 0, 0, 1, 0],
+        T: [1, 1, 1, 0, 1, 0, 0, 1, 0],
+        u: [1, 0, 1, 1, 0, 1, 1, 1, 1],
+        U: [1, 0, 1, 1, 0, 1, 1, 1, 1],
+        v: [1, 0, 1, 1, 0, 1, 0, 1, 0],
+        V: [1, 0, 1, 1, 0, 1, 0, 1, 0],
+        w: [1, 0, 1, 1, 1, 1, 1, 1, 1],
+        W: [1, 0, 1, 1, 1, 1, 1, 1, 1],
+        x: [1, 0, 1, 0, 1, 0, 1, 0, 1],
+        X: [1, 0, 1, 0, 1, 0, 1, 0, 1],
+        y: [1, 0, 1, 1, 1, 1, 0, 1, 0],
+        Y: [1, 0, 1, 1, 1, 1, 0, 1, 0],
+        z: [1, 1, 0, 0, 1, 0, 0, 1, 1],
+        Z: [1, 1, 0, 0, 1, 0, 0, 1, 1],
+        "'": [0, 1, 0, 0, 0, 0, 0, 0, 0],
+        '"': [1, 0, 1, 0, 0, 0, 0, 0, 0],
+        "^": [0, 1, 0, 1, 0, 1, 0, 0, 0],
+        "-": [0, 0, 0, 1, 1, 1, 0, 0, 0],
+        "=": [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        _: [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        "+": [0, 1, 0, 1, 1, 1, 0, 1, 0],
+        "[": [1, 1, 0, 1, 0, 0, 1, 1, 0],
+        "]": [0, 1, 1, 0, 0, 1, 0, 1, 1],
+        "(": [0, 1, 1, 1, 1, 0, 0, 1, 1],
+        ")": [1, 1, 0, 0, 1, 1, 1, 1, 0],
+        "\\": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+        "<": [0, 1, 0, 1, 0, 0, 0, 1, 0],
+        ">": [1, 0, 0, 0, 1, 0, 1, 0, 0],
+        "/": [0, 0, 1, 0, 1, 0, 1, 0, 0],
+        "|": [0, 1, 0, 0, 1, 0, 0, 1, 0],
+        " ": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      };
 
-        // Create an offscreen canvas to handle the base text rendering
-        const offscreenCanvas = document.createElement('canvas');
-        const offscreenCtx = offscreenCanvas.getContext('2d');
-        const previewCtx = previewCanvas.getContext('2d');
+      const threeXFiveMinifont = {
+        0: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        1: [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+        2: [1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0],
+        3: [1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        4: [1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0],
+        5: [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        6: [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+        7: [1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0],
+        8: [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        9: [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        a: [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+        A: [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0],
+        b: [1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        B: [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        c: [0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+        C: [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+        d: [0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        D: [1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],
+        e: [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],
+        E: [1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+        f: [0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+        F: [1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0],
+        g: [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+        G: [1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        h: [1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
+        H: [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
+        i: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+        I: [1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0],
+        j: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0],
+        J: [1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0],
+        k: [1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0],
+        K: [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0],
+        l: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
+        L: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+        m: [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0],
+        M: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0],
+        n: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
+        N: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
+        o: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        O: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        p: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0],
+        P: [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+        q: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1],
+        Q: [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0],
+        r: [0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+        R: [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0],
+        s: [0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0],
+        S: [1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+        t: [0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0],
+        T: [1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0],
+        u: [0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        U: [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        v: [0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+        V: [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+        w: [0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+        W: [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+        x: [0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0],
+        X: [1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0],
+        y: [0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0],
+        Y: [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+        z: [0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0],
+        Z: [1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+        "'": [0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        '"': [1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "^": [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+        "-": [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "=": [1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+        _: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        "+": [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+        "[": [1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
+        "]": [0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0],
+        "(": [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+        ")": [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+        "\\": [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+        "<": [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+        ">": [0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+        "/": [0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+        "|": [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+        $: [1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+        "%": [1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0],
+        "*": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+        "`": [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "?": [1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        ".": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        ",": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
+        ":": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        ";": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
+        "!": [
+          0,
+          1,
+          0, // Ascender
+          0,
+          1,
+          0, // Top row
+          0,
+          0,
+          0, // Middle row
+          0,
+          1,
+          0, // Bottom row
+          0,
+          0,
+          0, // Descender
+        ],
+      };
 
-        let zoomLevel = 4; // Initial zoom level
-        const maxZoom = 10;
-        const minZoom = 1;
-        
-        let panX = 0;
-        let panY = 0;
-        let isPanning = false;
-        let lastMouseX = 0;
-        let lastMouseY = 0;
-        let lastPixelCount = 0;
+      // Get references to all DOM elements
+      const textInput = document.getElementById("textInput");
+      const fontSelect = document.getElementById("fontSelect");
+      const prevFontBtn = document.getElementById("prevFontBtn");
+      const nextFontBtn = document.getElementById("nextFontBtn");
+      const fontHeightControls = document.getElementById("fontHeightControls");
+      const fontHeightDisplay = document.getElementById("fontHeightDisplay");
+      const decreaseSizeBtn = document.getElementById("decreaseSize");
+      const increaseSizeBtn = document.getElementById("increaseSize");
+      const previewCanvas = document.getElementById("previewCanvas");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const hintText = document.getElementById("hintText");
+      const pixelCountText = document.getElementById("pixelCount");
+      const previewContainer = document.getElementById("previewContainer");
 
-        // Function to draw text on the offscreen canvas
-        const renderOffscreenText = () => {
-            const text = textInput.value;
-            const fontStyle = fontSelect.value;
-            const fontHeight = parseInt(fontHeightInput.value, 10);
+      // Create an offscreen canvas to handle the base text rendering
+      const offscreenCanvas = document.createElement("canvas");
+      const offscreenCtx = offscreenCanvas.getContext("2d");
+      const previewCtx = previewCanvas.getContext("2d");
 
-            // Set the font to measure dimensions accurately
-            offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
-            const textMetrics = offscreenCtx.measureText(text);
-            const textWidth = textMetrics.width;
-            const textHeight = fontHeight;
+      let zoomLevel = 4; // Initial zoom level
+      const maxZoom = 15;
+      const minZoom = 1;
+      let fontHeight = 16; // State variable for font height
 
-            const padding = 10;
-            offscreenCanvas.width = Math.max(1, textWidth + padding * 2);
-            offscreenCanvas.height = Math.max(1, textHeight + padding * 2);
+      let panX = 0;
+      let panY = 0;
+      let isPanning = false;
+      let lastMouseX = 0;
+      let lastMouseY = 0;
+      let lastPixelCount = 0;
 
-            // Clear the offscreen canvas with a transparent background
-            offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let lastDist = null;
 
-            // Draw the text
-            offscreenCtx.fillStyle = 'black';
-            offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
-            offscreenCtx.fillText(text, padding, padding + textHeight * 0.75);
+      const isCustomFontSelected = () => {
+        return fontSelect.value.startsWith("custom-");
+      };
 
-            // Convert to 1-bit: black or transparent
-            const imageData = offscreenCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
-            const data = imageData.data;
-            let blackPixelCount = 0;
+      // Renders the 3x3 custom font
+      const renderMicrofont3x3 = (
+        fontData,
+        text,
+        charSpacing = 1,
+        lineSpacing = 1
+      ) => {
+        if (!text || !fontData) return 0;
+        const charWidth = 3;
+        const charHeight = 3;
+        const pixelSize = 1;
+        const lines = text.split("\n");
+        const totalWidth = lines.reduce(
+          (max, line) =>
+            Math.max(
+              max,
+              line.length * (charWidth + charSpacing) - charSpacing
+            ),
+          0
+        );
+        const totalHeight =
+          lines.length * (charHeight + lineSpacing) - lineSpacing;
+        offscreenCanvas.width = totalWidth;
+        offscreenCanvas.height = totalHeight;
+        offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
 
-            for (let i = 0; i < data.length; i += 4) {
-                // Check if the pixel is not fully transparent
-                if (data[i + 3] > 0) {
-                    if (data[i] < 200) {
-                        data[i] = 0;
-                        data[i + 1] = 0;
-                        data[i + 2] = 0;
-                        data[i + 3] = 255;
-                        blackPixelCount++;
-                    } else {
-                        data[i + 3] = 0;
-                    }
+        let blackPixelCount = 0;
+        let currentY = 0;
+        for (const line of lines) {
+          let currentX = 0;
+          for (const char of line) {
+            const charData =
+              fontData[char] || fontData[char.toLowerCase()] || fontData[" "];
+            if (charData) {
+              for (let y = 0; y < charHeight; y++) {
+                for (let x = 0; x < charWidth; x++) {
+                  const pixelIndex = y * charWidth + x;
+                  if (charData[pixelIndex]) {
+                    offscreenCtx.fillStyle = "black";
+                    offscreenCtx.fillRect(
+                      currentX + x * pixelSize,
+                      currentY + y * pixelSize,
+                      pixelSize,
+                      pixelSize
+                    );
+                    blackPixelCount++;
+                  }
                 }
+              }
             }
-            offscreenCtx.putImageData(imageData, 0, 0);
+            currentX += charWidth + charSpacing;
+          }
+          currentY += charHeight + lineSpacing;
+        }
+        return blackPixelCount;
+      };
 
-            // Update the pixel count display with color flash animation
-            pixelCountText.textContent = `Pixel Count: ${blackPixelCount}`;
-            pixelCountText.classList.remove('flash-red', 'flash-green');
+      // Renders the new 3x5 custom font
+      const renderMinifont3x5 = (
+        fontData,
+        text,
+        charSpacing = 1,
+        lineSpacing = 1
+      ) => {
+        if (!text || !fontData) return 0;
+        const charWidth = 3;
+        const charHeight = 5;
+        const pixelSize = 1;
+        const lines = text.split("\n");
+        const totalWidth = lines.reduce(
+          (max, line) =>
+            Math.max(
+              max,
+              line.length * (charWidth + charSpacing) - charSpacing
+            ),
+          0
+        );
+        const totalHeight =
+          lines.length * (charHeight + lineSpacing) - lineSpacing;
+        offscreenCanvas.width = totalWidth;
+        offscreenCanvas.height = totalHeight;
+        offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
 
-            // Force reflow to restart the animation
-            void pixelCountText.offsetWidth; 
-
-            if (blackPixelCount > lastPixelCount) {
-                pixelCountText.classList.add('flash-red');
-            } else if (blackPixelCount < lastPixelCount) {
-                pixelCountText.classList.add('flash-green');
+        let blackPixelCount = 0;
+        let currentY = 0;
+        for (const line of lines) {
+          let currentX = 0;
+          for (const char of line) {
+            const charData =
+              fontData[char] || fontData[char.toLowerCase()] || fontData[" "];
+            if (charData) {
+              for (let y = 0; y < charHeight; y++) {
+                for (let x = 0; x < charWidth; x++) {
+                  const pixelIndex = y * charWidth + x;
+                  if (charData[pixelIndex]) {
+                    offscreenCtx.fillStyle = "black";
+                    offscreenCtx.fillRect(
+                      currentX + x * pixelSize,
+                      currentY + y * pixelSize,
+                      pixelSize,
+                      pixelSize
+                    );
+                    blackPixelCount++;
+                  }
+                }
+              }
             }
-            lastPixelCount = blackPixelCount;
-        };
+            currentX += charWidth + charSpacing;
+          }
+          currentY += charHeight + lineSpacing;
+        }
+        return blackPixelCount;
+      };
 
-        // Function to render the visible canvas with pan and zoom
-        const drawPreview = () => {
-            const containerWidth = previewContainer.offsetWidth;
-            const containerHeight = previewContainer.offsetHeight;
+      // Function to draw text on the offscreen canvas
+      const renderOffscreenText = () => {
+        const text = textInput.value;
+        const selectedFont = fontSelect.value;
+        let pixelCount = 0;
 
-            previewCanvas.width = containerWidth;
-            previewCanvas.height = containerHeight;
-            
-            // Clear the preview canvas
-            previewCtx.clearRect(0, 0, containerWidth, containerHeight);
-            previewCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
+        if (selectedFont === "custom-font") {
+          fontHeightControls.style.display = "none";
+          pixelCount = renderMicrofont3x3(Microfont3x3, text);
+        } else if (selectedFont === "custom-3x5-minifont") {
+          fontHeightControls.style.display = "none";
+          pixelCount = renderMinifont3x5(threeXFiveMinifont, text);
+        } else {
+          fontHeightControls.style.display = "flex";
+          const fontStyle = fontSelect.value;
+          const lines = text.split("\n");
 
-            // Apply transformations
-            previewCtx.save();
-            previewCtx.translate(panX, panY);
-            previewCtx.scale(zoomLevel, zoomLevel);
+          // Set the font to measure dimensions accurately
+          offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
+          let maxTextWidth = 0;
+          let textHeight = fontHeight;
+          for (const line of lines) {
+            maxTextWidth = Math.max(
+              maxTextWidth,
+              offscreenCtx.measureText(line).width
+            );
+          }
 
-            // Draw the offscreen canvas content onto the preview canvas
-            previewCtx.drawImage(offscreenCanvas, 0, 0);
-            previewCtx.restore();
-        };
+          const lineHeight = textHeight * 1.2; // A bit of extra space for line breaks
+          const totalHeight = lines.length * lineHeight;
+          const padding = 10;
 
-        const handleWheel = (event) => {
-            event.preventDefault(); // Prevent page scrolling
-            hintText.classList.add('hidden');
-            
-            const oldZoom = zoomLevel;
-            if (event.deltaY < 0) {
-                zoomLevel = Math.min(zoomLevel + 1, maxZoom);
-            } else {
-                zoomLevel = Math.max(zoomLevel - 1, minZoom);
+          offscreenCanvas.width = Math.max(1, maxTextWidth + padding * 2);
+          offscreenCanvas.height = Math.max(1, totalHeight + padding * 2);
+
+          // Clear the offscreen canvas with a transparent background
+          offscreenCtx.clearRect(
+            0,
+            0,
+            offscreenCanvas.width,
+            offscreenCanvas.height
+          );
+
+          // Draw the text line by line
+          offscreenCtx.fillStyle = "black";
+          offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
+          for (let i = 0; i < lines.length; i++) {
+            offscreenCtx.fillText(
+              lines[i],
+              padding,
+              padding + i * lineHeight + textHeight * 0.75
+            );
+          }
+
+          // Convert to 1-bit: black or transparent
+          const imageData = offscreenCtx.getImageData(
+            0,
+            0,
+            offscreenCanvas.width,
+            offscreenCanvas.height
+          );
+          const data = imageData.data;
+
+          for (let i = 0; i < data.length; i += 4) {
+            // Check if the pixel is not fully transparent
+            if (data[i + 3] > 0) {
+              if (data[i] < 200) {
+                data[i] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
+                data[i + 3] = 255;
+                pixelCount++;
+              } else {
+                data[i + 3] = 0;
+              }
             }
+          }
+          offscreenCtx.putImageData(imageData, 0, 0);
+        }
 
-            // Recalculate pan to keep the point under the cursor in the same location
-            const containerRect = previewContainer.getBoundingClientRect();
-            const mouseX = event.clientX - containerRect.left;
-            const mouseY = event.clientY - containerRect.top;
+        // Update the pixel count display with color flash animation
+        pixelCountText.textContent = `Pixel Count: ${pixelCount}`;
+        pixelCountText.classList.remove("flash-red", "flash-green");
 
-            panX = mouseX - (mouseX - panX) * (zoomLevel / oldZoom);
-            panY = mouseY - (mouseY - panY) * (zoomLevel / oldZoom);
+        // Force reflow to restart the animation
+        void pixelCountText.offsetWidth;
 
-            drawPreview();
-        };
+        if (pixelCount > lastPixelCount) {
+          pixelCountText.classList.add("flash-green");
+        } else if (pixelCount < lastPixelCount) {
+          pixelCountText.classList.add("flash-red");
+        }
+        lastPixelCount = pixelCount;
+      };
 
-        const handleMouseDown = (event) => {
-            isPanning = true;
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-            previewContainer.style.cursor = 'grabbing';
-            hintText.classList.add('hidden');
-        };
+      // Function to draw the grid
+      const drawGrid = () => {
+        previewCtx.strokeStyle = "rgba(229, 229, 229, 0.5)";
+        previewCtx.lineWidth = 1 / zoomLevel;
+        previewCtx.beginPath();
+        const offscreenW = offscreenCanvas.width;
+        const offscreenH = offscreenCanvas.height;
 
-        const handleMouseMove = (event) => {
-            if (!isPanning) return;
-            
-            const dx = event.clientX - lastMouseX;
-            const dy = event.clientY - lastMouseY;
-            
-            panX += dx;
-            panY += dy;
-            
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-            
-            drawPreview();
-        };
+        // Shift grid drawing by half a pixel to align with pixel corners
+        for (let x = 0; x <= offscreenW; x += 1) {
+          previewCtx.moveTo(x, 0);
+          previewCtx.lineTo(x, offscreenH);
+        }
+        for (let y = 0; y <= offscreenH; y += 1) {
+          previewCtx.moveTo(0, y);
+          previewCtx.lineTo(offscreenW, y);
+        }
+        previewCtx.stroke();
+      };
 
-        const handleMouseUp = () => {
-            isPanning = false;
-            previewContainer.style.cursor = 'grab';
-        };
+      // Function to render the visible canvas with pan and zoom
+      const drawPreview = () => {
+        const containerWidth = previewContainer.offsetWidth;
+        const containerHeight = previewContainer.offsetHeight;
 
-        // Function to download the canvas as a PNG
-        const downloadImage = () => {
-            if (textInput.value.trim() === '') {
-                const messageBox = document.createElement('div');
-                messageBox.style.cssText = `
+        previewCanvas.width = containerWidth;
+        previewCanvas.height = containerHeight;
+
+        // Set canvas background color
+        previewCtx.fillStyle = "#f0f0f0";
+        previewCtx.fillRect(0, 0, containerWidth, containerHeight);
+
+        previewCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
+
+        // Apply transformations
+        previewCtx.save();
+        previewCtx.translate(panX, panY);
+        previewCtx.scale(zoomLevel, zoomLevel);
+
+        // Draw the offscreen canvas content onto the preview canvas
+        previewCtx.drawImage(offscreenCanvas, 0, 0);
+
+        // Draw the grid in the transformed space
+        drawGrid();
+        previewCtx.restore();
+      };
+
+      const handleWheel = (event) => {
+        event.preventDefault(); // Prevent page scrolling
+        hintText.classList.add("hidden");
+
+        const oldZoom = zoomLevel;
+        if (event.deltaY < 0) {
+          zoomLevel = Math.min(zoomLevel + 1, maxZoom);
+        } else {
+          zoomLevel = Math.max(zoomLevel - 1, minZoom);
+        }
+
+        // Recalculate pan to keep the point under the cursor in the same location
+        const containerRect = previewContainer.getBoundingClientRect();
+        const mouseX = event.clientX - containerRect.left;
+        const mouseY = event.clientY - containerRect.top;
+
+        panX = mouseX - (mouseX - panX) * (oldZoom / zoomLevel);
+        panY = mouseY - (mouseY - panY) * (oldZoom / zoomLevel);
+
+        drawPreview();
+      };
+
+      const handleMouseDown = (event) => {
+        isPanning = true;
+        lastMouseX = event.clientX;
+        lastMouseY = event.clientY;
+        previewContainer.style.cursor = "grabbing";
+        hintText.classList.add("hidden");
+      };
+
+      const handleMouseMove = (event) => {
+        if (!isPanning) return;
+
+        const dx = event.clientX - lastMouseX;
+        const dy = event.clientY - lastMouseY;
+
+        // Pan faithfully to mouse movement
+        panX += dx;
+        panY += dy;
+
+        lastMouseX = event.clientX;
+        lastMouseY = event.clientY;
+
+        drawPreview();
+      };
+
+      const handleMouseUp = () => {
+        isPanning = false;
+        previewContainer.style.cursor = "grab";
+      };
+
+      // Touch event listeners for mobile
+      const handleTouchStart = (event) => {
+        if (event.touches.length === 1) {
+          const touch = event.touches[0];
+          isPanning = true;
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+        } else if (event.touches.length === 2) {
+          lastDist = getDistance(event.touches[0], event.touches[1]);
+        }
+        hintText.classList.add("hidden");
+      };
+
+      const handleTouchMove = (event) => {
+        event.preventDefault(); // Prevent scrolling
+        if (event.touches.length === 1 && isPanning) {
+          const touch = event.touches[0];
+          const dx = touch.clientX - touchStartX;
+          const dy = touch.clientY - touchStartY;
+          
+          // Pan faithfully to touch movement
+          panX += dx;
+          panY += dy;
+
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+          drawPreview();
+        } else if (event.touches.length === 2 && lastDist !== null) {
+          const dist = getDistance(event.touches[0], event.touches[1]);
+          const oldZoom = zoomLevel;
+          const sensitivity = 0.05;
+          zoomLevel = Math.max(
+            minZoom,
+            Math.min(maxZoom, zoomLevel + (dist - lastDist) * sensitivity)
+          );
+          lastDist = dist;
+
+          // Simple zoom centering
+          const containerRect = previewContainer.getBoundingClientRect();
+          const centerX =
+            (event.touches[0].clientX + event.touches[1].clientX) / 2 -
+            containerRect.left;
+          const centerY =
+            (event.touches[0].clientY + event.touches[1].clientY) / 2 -
+            containerRect.top;
+
+          panX = centerX - (centerX - panX) * (oldZoom / zoomLevel);
+          panY = centerY - (centerY - panY) * (oldZoom / zoomLevel);
+          drawPreview();
+        }
+      };
+
+      const handleTouchEnd = () => {
+        isPanning = false;
+        lastDist = null;
+      };
+
+      const getDistance = (touch1, touch2) => {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      };
+
+      // Function to download the canvas as a PNG
+      const downloadImage = () => {
+        if (textInput.value.trim() === "") {
+          const messageBox = document.createElement("div");
+          messageBox.style.cssText = `
                     position: fixed;
                     top: 50%;
                     left: 50%;
@@ -342,58 +867,128 @@
                     z-index: 1000;
                     text-align: center;
                 `;
-                messageBox.innerHTML = `<p>Please enter some text to generate an image.</p><button onclick="this.parentNode.remove()" style="margin-top: 10px; padding: 5px 10px; background-color: #555; color: white; border: none; border-radius: 4px;">OK</button>`;
-                document.body.appendChild(messageBox);
-                return;
-            }
+          messageBox.innerHTML = `<p>Please enter some text to generate an image.</p><button onclick="this.parentNode.remove()" style="margin-top: 10px; padding: 5px 10px; background-color: #555; color: white; border: none; border-radius: 4px;">OK</button>`;
+          document.body.appendChild(messageBox);
+          return;
+        }
 
-            // Use the offscreen canvas for download to ensure original quality
-            const link = document.createElement('a');
-            link.download = `pixel_font_${textInput.value.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
-            link.href = offscreenCanvas.toDataURL('image/png');
-            link.click();
-        };
-        
-        // Event listeners for user input
-        textInput.addEventListener('input', () => {
-            renderOffscreenText();
-            drawPreview();
-        });
-        fontSelect.addEventListener('change', () => {
-            renderOffscreenText();
-            drawPreview();
-        });
-        fontHeightInput.addEventListener('input', () => {
-            renderOffscreenText();
-            drawPreview();
-        });
-        downloadBtn.addEventListener('click', downloadImage);
-        
-        // Panning event listeners
-        previewContainer.addEventListener('mousedown', handleMouseDown);
-        previewContainer.addEventListener('mousemove', handleMouseMove);
-        previewContainer.addEventListener('mouseup', handleMouseUp);
-        previewContainer.addEventListener('mouseleave', handleMouseUp);
+        // Use the offscreen canvas for download to ensure original quality
+        const link = document.createElement("a");
+        link.download = `pixel_font_${textInput.value.replace(
+          /[^a-zA-Z0-9\n]/g,
+          "_"
+        )}.png`;
+        link.href = offscreenCanvas.toDataURL("image/png");
+        link.click();
+      };
 
-        // Zoom event listener
-        previewContainer.addEventListener('wheel', handleWheel);
+      // Event listener to handle font selection changes
+      fontSelect.addEventListener("change", () => {
+        if (isCustomFontSelected()) {
+          fontHeightControls.style.display = "none";
+        } else {
+          fontHeightControls.style.display = "flex";
+        }
+        renderOffscreenText();
+        // Re-center on font change
+        panX =
+          previewContainer.offsetWidth / 2 -
+          (offscreenCanvas.width * zoomLevel) / 2;
+        panY =
+          previewContainer.offsetHeight / 2 -
+          (offscreenCanvas.height * zoomLevel) / 2;
+        drawPreview();
+      });
 
-        // Responsive drawing on resize
-        window.addEventListener('resize', () => {
-            // Re-center the view on resize
-            panX = (previewContainer.offsetWidth / 2) - (offscreenCanvas.width * zoomLevel / 2);
-            panY = (previewContainer.offsetHeight / 2) - (offscreenCanvas.height * zoomLevel / 2);
-            drawPreview();
-        });
+      // Event listeners for font switching buttons
+      prevFontBtn.addEventListener("click", () => {
+        const options = Array.from(fontSelect.options);
+        const currentIndex = options.findIndex(
+          (option) => option.value === fontSelect.value
+        );
+        const newIndex = (currentIndex - 1 + options.length) % options.length;
+        fontSelect.value = options[newIndex].value;
+        fontSelect.dispatchEvent(new Event("change"));
+      });
 
-        // Initial setup and draw on page load
-        window.addEventListener('load', () => {
-            renderOffscreenText();
-            // Initial centering
-            panX = (previewContainer.offsetWidth / 2) - (offscreenCanvas.width * zoomLevel / 2);
-            panY = (previewContainer.offsetHeight / 2) - (offscreenCanvas.height * zoomLevel / 2);
-            drawPreview();
-        });
+      nextFontBtn.addEventListener("click", () => {
+        const options = Array.from(fontSelect.options);
+        const currentIndex = options.findIndex(
+          (option) => option.value === fontSelect.value
+        );
+        const newIndex = (currentIndex + 1) % options.length;
+        fontSelect.value = options[newIndex].value;
+        fontSelect.dispatchEvent(new Event("change"));
+      });
+
+      // Event listeners for user input
+      textInput.addEventListener("input", () => {
+        renderOffscreenText();
+        drawPreview();
+      });
+
+      decreaseSizeBtn.addEventListener("click", () => {
+        if (fontHeight > 8) {
+          fontHeight--;
+          fontHeightDisplay.textContent = fontHeight;
+          renderOffscreenText();
+          drawPreview();
+        }
+      });
+
+      increaseSizeBtn.addEventListener("click", () => {
+        if (fontHeight < 128) {
+          fontHeight++;
+          fontHeightDisplay.textContent = fontHeight;
+          renderOffscreenText();
+          drawPreview();
+        }
+      });
+
+      downloadBtn.addEventListener("click", downloadImage);
+
+      // Panning event listeners
+      previewContainer.addEventListener("mousedown", handleMouseDown);
+      previewContainer.addEventListener("mousemove", handleMouseMove);
+      previewContainer.addEventListener("mouseup", handleMouseUp);
+      previewContainer.addEventListener("mouseleave", handleMouseUp);
+
+      // Touch event listeners for mobile
+      previewContainer.addEventListener("touchstart", handleTouchStart);
+      previewContainer.addEventListener("touchmove", handleTouchMove);
+      previewContainer.addEventListener("touchend", handleTouchEnd);
+
+      // Zoom event listener
+      previewContainer.addEventListener("wheel", handleWheel);
+
+      // Responsive drawing on resize
+      window.addEventListener("resize", () => {
+        // Re-center the view on resize
+        panX =
+          previewContainer.offsetWidth / 2 -
+          (offscreenCanvas.width * zoomLevel) / 2;
+        panY =
+          previewContainer.offsetHeight / 2 -
+          (offscreenCanvas.height * zoomLevel) / 2;
+        drawPreview();
+      });
+
+      // Initial setup and draw on page load
+      window.addEventListener("load", () => {
+        textInput.value = "Hello World!";
+
+        // Select the new custom font by default
+        fontSelect.value = "custom-3x5-minifont";
+        renderOffscreenText();
+        // Initial centering
+        panX =
+          previewContainer.offsetWidth / 2 -
+          (offscreenCanvas.width * zoomLevel) / 2;
+        panY =
+          previewContainer.offsetHeight / 2 -
+          (offscreenCanvas.height * zoomLevel) / 2;
+        drawPreview();
+      });
     </script>
-</body>
+  </body>
 </html>
