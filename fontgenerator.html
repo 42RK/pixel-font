@@ -120,101 +120,84 @@
   >
     <!-- Control Panel at the top -->
     <div class="flex-shrink-0 bg-[#242424] p-8 shadow-lg w-full z-10">
-      <div class="max-w-4xl mx-auto">
+      <div class="max-w-4xl mx-auto flex flex-col items-center gap-6">
         <h1 class="text-3xl font-bold mb-6 text-center">
           Pixel Font Generator
         </h1>
 
-        <!-- Text Input remains full-width -->
-        <div class="mb-6 flex justify-center">
-          <div class="w-full">
-            <label for="textInput" class="control-label">Text Input:</label>
-            <textarea
-              id="textInput"
-              rows="3"
-              class="control-input resize-y text-center"
-            ></textarea>
-          </div>
+        <!-- Text Input -->
+        <div class="w-full">
+          <label for="textInput" class="control-label sr-only"
+            >Text Input:</label
+          >
+          <textarea
+            id="textInput"
+            rows="3"
+            class="control-input resize-y placeholder-gray-500 text-center mx-auto"
+            placeholder="Enter your text here"
+          ></textarea>
         </div>
 
-        <!-- Controls are now stacked vertically -->
-        <div class="flex flex-col justify-center items-center gap-6">
-          <!-- Font Selection -->
-          <div class="w-full">
-            <label for="fontSelect" class="control-label"
-              >Font Selection:</label
-            >
-            <div class="flex items-center gap-2">
-              <button
-                id="prevFontBtn"
-                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-xl p-0 transition-all duration-200"
-              >
-                <span><</span>
-              </button>
-              <select id="fontSelect" class="control-input flex-grow">
-                <option value="custom-3x5-minifont">3x5 Minifont</option>
-                <option value="custom-font">3x3 Microfont (unicase)</option>
-                <option value="'VT323', monospace">VT323</option>
-                <option value="'IBM Plex Mono', monospace">
-                  IBM Plex Mono
-                </option>
-                <option value="'Space Mono', monospace">Space Mono</option>
-                <option value="'Inconsolata', monospace">Inconsolata</option>
-                <option value="'Cousine', monospace">Cousine</option>
-                <option value="'Source Code Pro', monospace">
-                  Source Code Pro
-                </option>
-                <option value="'Roboto Mono', monospace">Roboto Mono</option>
-                <option value="'Fira Code', monospace">Fira Code</option>
-                <option value="'Press Start 2P', cursive">
-                  Press Start 2P
-                </option>
-                <option value="'Pixelify Sans', sans-serif">
-                  Pixelify Sans
-                </option>
-                <option value="'DotGothic16', sans-serif">DotGothic16</option>
-                <option value="'Cutive Mono', monospace">Cutive Mono</option>
-                <option value="'Fugaz One', sans-serif">Fugaz One</option>
-                <option value="'Orbitron', sans-serif">Orbitron</option>
-                <option value="'Oswald', sans-serif">Oswald</option>
-                <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-                <option value="monospace">Monospace (System)</option>
-                <option value="Courier New, monospace">Courier New</option>
-              </select>
-              <button
-                id="nextFontBtn"
-                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-xl p-0 transition-all duration-200"
-              >
-                <span>></span>
-              </button>
-            </div>
-          </div>
+        <!-- Font Selection -->
+        <div class="w-full md:w-1/2 flex items-center justify-center gap-2">
+          <button
+            id="prevFontBtn"
+            class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-xl p-0 transition-all duration-200"
+          >
+            <span>&lt;</span>
+          </button>
+          <select id="fontSelect" class="control-input flex-grow text-center">
+            <option value="custom-3x5-minifont">3x5 Minifont</option>
+            <option value="custom-font">3x3 Microfont (unicase)</option>
+            <option value="'VT323', monospace">VT323</option>
+            <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
+            <option value="'Space Mono', monospace">Space Mono</option>
+            <option value="'Inconsolata', monospace">Inconsolata</option>
+            <option value="'Cousine', monospace">Cousine</option>
+            <option value="'Source Code Pro', monospace">Source Code Pro</option>
+            <option value="'Roboto Mono', monospace">Roboto Mono</option>
+            <option value="'Fira Code', monospace">Fira Code</option>
+            <option value="'Press Start 2P', cursive">Press Start 2P</option>
+            <option value="'Pixelify Sans', sans-serif">Pixelify Sans</option>
+            <option value="'DotGothic16', sans-serif">DotGothic16</option>
+            <option value="'Cutive Mono', monospace">Cutive Mono</option>
+            <option value="'Fugaz One', sans-serif">Fugaz One</option>
+            <option value="'Orbitron', sans-serif">Orbitron</option>
+            <option value="'Oswald', sans-serif">Oswald</option>
+            <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
+            <option value="monospace">Monospace (System)</option>
+            <option value="Courier New, monospace">Courier New</option>
+          </select>
+          <button
+            id="nextFontBtn"
+            class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-xl p-0 transition-all duration-200"
+          >
+            <span>&gt;</span>
+          </button>
+        </div>
 
-          <!-- Font Height Controls (New UI) -->
-          <div id="fontHeightControls" class="w-full">
-            <label for="fontHeight" class="control-label"
-              >Font Height (pixels):</label
-            >
-            <div class="flex items-center gap-2">
-              <button
-                id="decreaseSize"
-                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-2xl p-0 transition-all duration-200"
-              >
-                -
-              </button>
-              <span
-                id="fontHeightDisplay"
-                class="text-xl font-bold text-center w-20"
-                >16</span
-              >
-              <button
-                id="increaseSize"
-                class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-2xl p-0 transition-all duration-200"
-              >
-                +
-              </button>
-            </div>
-          </div>
+        <!-- Font Height Controls (New UI) -->
+        <div
+          id="fontHeightControls"
+          class="w-full md:w-1/2 flex items-center justify-center gap-2"
+        >
+          <button
+            id="decreaseSize"
+            class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-2xl p-0 transition-all duration-200"
+          >
+            -
+          </button>
+          <span
+            id="fontHeightDisplay"
+            class="text-xl font-bold text-center w-20"
+            >16</span
+          >
+          <button
+            id="increaseSize"
+            class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-2xl p-0 transition-all duration-200"
+          >
+            +
+          </button>
         </div>
 
         <!-- Download Button -->
@@ -411,7 +394,7 @@
         "<": [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0],
         ">": [0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
         "/": [0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
-        "|": [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+        "|": [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
         $: [1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
         "%": [1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0],
         "*": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
@@ -772,11 +755,14 @@
         // Force reflow to restart the animation
         void pixelCountText.offsetWidth;
 
+        // --- NEW BEHAVIOR: flash red on increase, green on decrease ---
         if (pixelCount > lastPixelCount) {
-          pixelCountText.classList.add("flash-green");
-        } else if (pixelCount < lastPixelCount) {
           pixelCountText.classList.add("flash-red");
+        } else if (pixelCount < lastPixelCount) {
+          pixelCountText.classList.add("flash-green");
         }
+        // -----------------------------------------------------------
+
         lastPixelCount = pixelCount;
       };
 
