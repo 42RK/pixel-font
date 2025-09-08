@@ -330,7 +330,7 @@
         ">": [1, 0, 0, 0, 1, 0, 1, 0, 0],
         "/": [0, 0, 1, 0, 1, 0, 1, 0, 0],
         "|": [0, 1, 0, 0, 1, 0, 0, 1, 0],
-        " ": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        " ": [0, 0, 0, 0, 0, 0, 0, 0, 0], // The added space character
       };
 
       const threeXFiveMinifont = {
@@ -375,7 +375,7 @@
         o: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
         O: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
         p: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0],
-        P: [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+        P: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
         q: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1],
         Q: [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0],
         r: [0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -438,6 +438,7 @@
           0,
           0, // Descender
         ],
+        " ": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       };
 
       // Get references to all DOM elements
@@ -480,7 +481,7 @@
         return fontSelect.value.startsWith("custom-");
       };
 
-      // Renders the 3x3 custom font
+      // Renders the 3x3 custom font with variable character width
       const renderMicrofont3x3 = (
         fontData,
         text,
@@ -492,52 +493,97 @@
         const charHeight = 3;
         const pixelSize = 1;
         const lines = text.split("\n");
-        const totalWidth = lines.reduce(
-          (max, line) =>
-            Math.max(
-              max,
-              line.length * (charWidth + charSpacing) - charSpacing
-            ),
-          0
-        );
+        const renderedText = lines.map((line) => {
+          return line
+            .split("")
+            .map(
+              (char) =>
+                fontData[char] || fontData[char.toLowerCase()] || fontData[" "]
+            );
+        });
+
+        // Calculate total width based on non-empty columns
+        const totalWidth = renderedText.reduce((maxW, line) => {
+          let lineWidth = 0;
+          for (const char of line) {
+            let charRenderWidth = 0;
+            // Add a safety check to prevent the TypeError
+            if (!char) continue;
+            
+            // New logic to handle the space character exception
+            if (char === fontData[' ']) {
+              charRenderWidth = 2; // Force space to have a width of 2 pixels
+            } else {
+              for (let x = 0; x < charWidth; x++) {
+                let isColumnEmpty = true;
+                for (let y = 0; y < charHeight; y++) {
+                  if (char[y * charWidth + x]) {
+                    isColumnEmpty = false;
+                    break;
+                  }
+                }
+                if (!isColumnEmpty) {
+                  charRenderWidth++;
+                }
+              }
+            }
+            lineWidth += charRenderWidth + charSpacing;
+          }
+          return Math.max(maxW, lineWidth - charSpacing);
+        }, 0);
         const totalHeight =
           lines.length * (charHeight + lineSpacing) - lineSpacing;
+
         offscreenCanvas.width = totalWidth;
         offscreenCanvas.height = totalHeight;
         offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
 
         let blackPixelCount = 0;
         let currentY = 0;
-        for (const line of lines) {
+        for (const line of renderedText) {
           let currentX = 0;
-          for (const char of line) {
-            const charData =
-              fontData[char] || fontData[char.toLowerCase()] || fontData[" "];
-            if (charData) {
-              for (let y = 0; y < charHeight; y++) {
-                for (let x = 0; x < charWidth; x++) {
-                  const pixelIndex = y * charWidth + x;
-                  if (charData[pixelIndex]) {
-                    offscreenCtx.fillStyle = "black";
-                    offscreenCtx.fillRect(
-                      currentX + x * pixelSize,
-                      currentY + y * pixelSize,
-                      pixelSize,
-                      pixelSize
-                    );
-                    blackPixelCount++;
+          for (const charData of line) {
+            // Add a safety check to prevent the TypeError
+            if (!charData) continue;
+            
+            let pixelXOffset = 0;
+            // New logic for space character exception
+            if (charData === fontData[' ']) {
+              pixelXOffset = 2;
+            } else {
+              for (let x = 0; x < charWidth; x++) {
+                let isColumnEmpty = true;
+                for (let y = 0; y < charHeight; y++) {
+                  if (charData[y * charWidth + x]) {
+                    isColumnEmpty = false;
+                    break;
                   }
+                }
+                if (!isColumnEmpty) {
+                  for (let y = 0; y < charHeight; y++) {
+                    if (charData[y * charWidth + x]) {
+                      offscreenCtx.fillStyle = "black";
+                      offscreenCtx.fillRect(
+                        currentX + pixelXOffset * pixelSize,
+                        currentY + y * pixelSize,
+                        pixelSize,
+                        pixelSize
+                      );
+                      blackPixelCount++;
+                    }
+                  }
+                  pixelXOffset++;
                 }
               }
             }
-            currentX += charWidth + charSpacing;
+            currentX += pixelXOffset + charSpacing;
           }
           currentY += charHeight + lineSpacing;
         }
         return blackPixelCount;
       };
 
-      // Renders the new 3x5 custom font
+      // Renders the new 3x5 custom font with variable character width
       const renderMinifont3x5 = (
         fontData,
         text,
@@ -549,14 +595,44 @@
         const charHeight = 5;
         const pixelSize = 1;
         const lines = text.split("\n");
-        const totalWidth = lines.reduce(
-          (max, line) =>
-            Math.max(
-              max,
-              line.length * (charWidth + charSpacing) - charSpacing
-            ),
-          0
-        );
+        const renderedText = lines.map((line) => {
+          return line
+            .split("")
+            .map(
+              (char) =>
+                fontData[char] || fontData[char.toLowerCase()] || fontData[" "]
+            );
+        });
+
+        // Calculate total width based on non-empty columns
+        const totalWidth = renderedText.reduce((maxW, line) => {
+          let lineWidth = 0;
+          for (const char of line) {
+            let charRenderWidth = 0;
+            // Add a safety check to prevent the TypeError
+            if (!char) continue;
+            
+            // New logic to handle the space character exception
+            if (char === fontData[' ']) {
+              charRenderWidth = 2; // Force space to have a width of 2 pixels
+            } else {
+              for (let x = 0; x < charWidth; x++) {
+                let isColumnEmpty = true;
+                for (let y = 0; y < charHeight; y++) {
+                  if (char[y * charWidth + x]) {
+                    isColumnEmpty = false;
+                    break;
+                  }
+                }
+                if (!isColumnEmpty) {
+                  charRenderWidth++;
+                }
+              }
+            }
+            lineWidth += charRenderWidth + charSpacing;
+          }
+          return Math.max(maxW, lineWidth - charSpacing);
+        }, 0);
         const totalHeight =
           lines.length * (charHeight + lineSpacing) - lineSpacing;
         offscreenCanvas.width = totalWidth;
@@ -565,29 +641,44 @@
 
         let blackPixelCount = 0;
         let currentY = 0;
-        for (const line of lines) {
+        for (const line of renderedText) {
           let currentX = 0;
-          for (const char of line) {
-            const charData =
-              fontData[char] || fontData[char.toLowerCase()] || fontData[" "];
-            if (charData) {
-              for (let y = 0; y < charHeight; y++) {
-                for (let x = 0; x < charWidth; x++) {
-                  const pixelIndex = y * charWidth + x;
-                  if (charData[pixelIndex]) {
-                    offscreenCtx.fillStyle = "black";
-                    offscreenCtx.fillRect(
-                      currentX + x * pixelSize,
-                      currentY + y * pixelSize,
-                      pixelSize,
-                      pixelSize
-                    );
-                    blackPixelCount++;
+          for (const charData of line) {
+            // Add a safety check to prevent the TypeError
+            if (!charData) continue;
+            
+            let pixelXOffset = 0;
+            // New logic for space character exception
+            if (charData === fontData[' ']) {
+              pixelXOffset = 2;
+            } else {
+              for (let x = 0; x < charWidth; x++) {
+                let isColumnEmpty = true;
+                for (let y = 0; y < charHeight; y++) {
+                  if (charData[y * charWidth + x]) {
+                    isColumnEmpty = false;
+                    break;
                   }
+                }
+
+                if (!isColumnEmpty) {
+                  for (let y = 0; y < charHeight; y++) {
+                    if (charData[y * charWidth + x]) {
+                      offscreenCtx.fillStyle = "black";
+                      offscreenCtx.fillRect(
+                        currentX + pixelXOffset * pixelSize,
+                        currentY + y * pixelSize,
+                        pixelSize,
+                        pixelSize
+                      );
+                      blackPixelCount++;
+                    }
+                  }
+                  pixelXOffset++;
                 }
               }
             }
-            currentX += charWidth + charSpacing;
+            currentX += pixelXOffset + charSpacing;
           }
           currentY += charHeight + lineSpacing;
         }
@@ -787,7 +878,6 @@
         previewContainer.style.cursor = "grab";
       };
 
-      // Touch event listeners for mobile
       const handleTouchStart = (event) => {
         if (event.touches.length === 1) {
           const touch = event.touches[0];
