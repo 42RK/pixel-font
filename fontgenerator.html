@@ -773,12 +773,8 @@
           fontSelect.addEventListener("change", () => {
             if (isCustomFontSelected()) {
               fontHeightControls.style.display = "none";
-              // Alignment buttons are only available for custom fonts.
-              alignmentControls.style.display = "flex";
             } else {
               fontHeightControls.style.display = "flex";
-              // Hide alignment buttons for non-custom fonts, as they are not supported.
-              alignmentControls.style.display = "none";
             }
             renderOffscreenText();
             // Re-center on font change
