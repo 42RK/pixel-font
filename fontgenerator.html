@@ -83,7 +83,7 @@
           </button>
         </div>
 
-        <!-- Font Height Controls (New UI) -->
+        <!-- Font Height Controls -->
         <div
           id="fontHeightControls"
           class="w-full md:w-1/2 flex items-center justify-center gap-2"
@@ -104,6 +104,97 @@
             class="action-button bg-gray-700 hover:bg-gray-800 text-white w-12 h-12 flex items-center justify-center text-2xl p-0 transition-all duration-200"
           >
             +
+          </button>
+        </div>
+
+        <!-- Alignment Controls -->
+        <div
+          id="alignmentControls"
+          class="flex items-center justify-center bg-gray-700 rounded-full overflow-hidden p-1 shadow-inner"
+        >
+          <button
+            id="align-left"
+            class="alignment-button active p-3 rounded-full transition-colors duration-200"
+            title="Align Left"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="15" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <button
+            id="align-center"
+            class="alignment-button p-3 rounded-full transition-colors duration-200"
+            title="Align Center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="21" y1="6" x2="3" y2="6"></line>
+              <line x1="18" y1="12" x2="6" y2="12"></line>
+              <line x1="21" y1="18" x2="3" y2="18"></line>
+            </svg>
+          </button>
+          <button
+            id="align-right"
+            class="alignment-button p-3 rounded-full transition-colors duration-200"
+            title="Align Right"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="21" y1="6" x2="3" y2="6"></line>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+              <line x1="21" y1="18" x2="3" y2="18"></line>
+            </svg>
+          </button>
+          <button
+            id="align-justify"
+            class="alignment-button p-3 rounded-full transition-colors duration-200"
+            title="Justify"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
           </button>
         </div>
 
@@ -163,6 +254,8 @@
           const hintText = document.getElementById("hintText");
           const pixelCountText = document.getElementById("pixelCount");
           const previewContainer = document.getElementById("previewContainer");
+          const alignmentControls =
+            document.getElementById("alignmentControls");
 
           // Create an offscreen canvas to handle the base text rendering
           const offscreenCanvas = document.createElement("canvas");
@@ -180,6 +273,7 @@
           let lastMouseX = 0;
           let lastMouseY = 0;
           let lastPixelCount = 0;
+          let currentAlignment = "left"; // New state variable for alignment
 
           let touchStartX = 0;
           let touchStartY = 0;
@@ -193,6 +287,7 @@
            * Renders a pixel font from a 1D or 2D array font data.
            * @param {object} fontData The font data object containing character definitions.
            * @param {string} text The text to render.
+           * @param {string} alignment The text alignment ('left', 'center', 'right').
            * @param {number} charSpacing The spacing between characters.
            * @param {number} lineSpacing The spacing between lines.
            * @returns {number} The total number of black pixels rendered.
@@ -200,6 +295,7 @@
           const renderPixelFont = (
             fontData,
             text,
+            alignment,
             charSpacing = 1,
             lineSpacing = 1
           ) => {
@@ -241,8 +337,9 @@
               }
             }
 
-            // Calculate total dimensions
-            const totalWidth = lines.reduce((maxWidth, line) => {
+            // Calculate total dimensions and individual line widths
+            let maxRenderedLineWidth = 0;
+            const lineRenderedWidths = lines.map((line) => {
               let lineWidth = 0;
               for (const char of line) {
                 const charData =
@@ -250,7 +347,6 @@
                   fontData[char.toLowerCase()] ||
                   fontData[" "];
                 if (!charData) continue;
-
                 let charRenderWidth = 0;
                 if (char === " ") {
                   charRenderWidth = 2; // Fixed space width
@@ -275,9 +371,11 @@
                 }
                 lineWidth += charRenderWidth + charSpacing;
               }
-              return Math.max(maxWidth, lineWidth);
-            }, 0);
+              maxRenderedLineWidth = Math.max(maxRenderedLineWidth, lineWidth);
+              return lineWidth;
+            });
 
+            const totalWidth = maxRenderedLineWidth;
             const totalHeight =
               lines.length * (charHeight + lineSpacing) - lineSpacing;
 
@@ -288,8 +386,21 @@
             let blackPixelCount = 0;
             let currentY = 0;
 
-            for (const line of lines) {
-              let currentX = 0;
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+              const lineWidth = lineRenderedWidths[i];
+              let xOffset = 0;
+              // Calculate xOffset based on alignment
+              if (alignment === "center") {
+                xOffset = Math.floor((totalWidth - lineWidth) / 2);
+              } else if (alignment === "right") {
+                xOffset = totalWidth - lineWidth;
+              } else {
+                // Default to left alignment
+                xOffset = 0;
+              }
+
+              let currentX = xOffset;
               for (const char of line) {
                 const charData =
                   fontData[char] ||
@@ -346,12 +457,15 @@
             const selectedFont = fontSelect.value;
             let pixelCount = 0;
 
-            if (selectedFont === "custom-font") {
+            if (isCustomFontSelected()) {
               fontHeightControls.style.display = "none";
-              pixelCount = renderPixelFont(fontBundle.Microfont3x3, text);
-            } else if (selectedFont === "custom-3x5-minifont") {
-              fontHeightControls.style.display = "none";
-              pixelCount = renderPixelFont(fontBundle.threeXFiveMinifont, text);
+              pixelCount = renderPixelFont(
+                selectedFont === "custom-font"
+                  ? fontBundle.Microfont3x3
+                  : fontBundle.threeXFiveMinifont,
+                text,
+                currentAlignment
+              );
             } else {
               fontHeightControls.style.display = "flex";
               const fontStyle = fontSelect.value;
@@ -360,14 +474,13 @@
               // Set the font to measure dimensions accurately
               offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
               let maxTextWidth = 0;
-              let textHeight = fontHeight;
-              for (const line of lines) {
-                maxTextWidth = Math.max(
-                  maxTextWidth,
-                  offscreenCtx.measureText(line).width
-                );
-              }
+              const lineMetrics = lines.map((line) => {
+                const metrics = offscreenCtx.measureText(line);
+                maxTextWidth = Math.max(maxTextWidth, metrics.width);
+                return metrics.width;
+              });
 
+              const textHeight = fontHeight;
               const lineHeight = textHeight * 1.2; // A bit of extra space for line breaks
               const totalHeight = lines.length * lineHeight;
               const padding = 10;
@@ -386,11 +499,37 @@
               // Draw the text line by line
               offscreenCtx.fillStyle = "black";
               offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
+              offscreenCtx.textBaseline = "top"; // Consistent text baseline
+
               for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const lineWidth = lineMetrics[i];
+                let xOffset = 0;
+                let textAlign = "left";
+
+                switch (currentAlignment) {
+                  case "center":
+                    xOffset = maxTextWidth / 2;
+                    textAlign = "center";
+                    break;
+                  case "right":
+                    xOffset = maxTextWidth;
+                    textAlign = "right";
+                    break;
+                  case "justify":
+                    xOffset = 0;
+                    textAlign = "left"; // Justify not directly supported, fallback
+                    break;
+                  default: // left
+                    xOffset = 0;
+                    textAlign = "left";
+                }
+
+                offscreenCtx.textAlign = textAlign;
                 offscreenCtx.fillText(
-                  lines[i],
-                  padding,
-                  padding + i * lineHeight + textHeight * 0.75
+                  line,
+                  padding + xOffset,
+                  padding + i * lineHeight
                 );
               }
 
@@ -634,8 +773,12 @@
           fontSelect.addEventListener("change", () => {
             if (isCustomFontSelected()) {
               fontHeightControls.style.display = "none";
+              // Alignment buttons are only available for custom fonts.
+              alignmentControls.style.display = "flex";
             } else {
               fontHeightControls.style.display = "flex";
+              // Hide alignment buttons for non-custom fonts, as they are not supported.
+              alignmentControls.style.display = "none";
             }
             renderOffscreenText();
             // Re-center on font change
@@ -668,6 +811,23 @@
             const newIndex = (currentIndex + 1) % options.length;
             fontSelect.value = options[newIndex].value;
             fontSelect.dispatchEvent(new Event("change"));
+          });
+
+          // Event listeners for alignment buttons
+          alignmentControls.addEventListener("click", (event) => {
+            const target = event.target.closest(".alignment-button");
+            if (target) {
+              // Remove active class from all buttons
+              document
+                .querySelectorAll(".alignment-button")
+                .forEach((btn) => btn.classList.remove("active"));
+              // Add active class to the clicked button
+              target.classList.add("active");
+              // Update alignment state based on button ID
+              currentAlignment = target.id.replace("align-", "");
+              renderOffscreenText();
+              drawPreview();
+            }
           });
 
           // Event listeners for user input
