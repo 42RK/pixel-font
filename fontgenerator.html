@@ -237,19 +237,13 @@
 
     <script>
       let fontBundle = {};
-      let Microfont3x3;
-      let threeXFiveMinifont;
 
       fetch("fonts.json")
         .then((response) => response.json())
         .then((data) => {
           fontBundle = data;
-          console.log("Loaded JSON keys:", Object.keys(data));
 
-          const Microfont3x3 = fontBundle.Microfont3x3;
-          const threeXFiveMinifont = fontBundle.threeXFiveMinifont;
-
-          // Now that fonts are loaded, get references and set up listeners
+          // Get references to all the necessary elements
           const textInput = document.getElementById("textInput");
           const fontSelect = document.getElementById("fontSelect");
           const prevFontBtn = document.getElementById("prevFontBtn");
@@ -291,150 +285,81 @@
             return fontSelect.value.startsWith("custom-");
           };
 
-          // Renders the 3x3 custom font with variable character width
-          const renderMicrofont3x3 = (
+          /**
+           * Renders a pixel font from a 1D or 2D array font data.
+           * @param {object} fontData The font data object containing character definitions.
+           * @param {string} text The text to render.
+           * @param {number} charSpacing The spacing between characters.
+           * @param {number} lineSpacing The spacing between lines.
+           * @returns {number} The total number of black pixels rendered.
+           */
+          const renderPixelFont = (
             fontData,
             text,
             charSpacing = 1,
             lineSpacing = 1
           ) => {
             if (!text || !fontData) return 0;
-            const charWidth = 3;
-            const charHeight = 3;
-            const pixelSize = 1;
             const lines = text.split("\n");
-            const renderedText = lines.map((line) => {
-              return line
-                .split("")
-                .map(
-                  (char) =>
-                    fontData[char] ||
-                    fontData[char.toLowerCase()] ||
-                    fontData[" "]
-                );
-            });
 
-            // Calculate total width based on non-empty columns
-            const totalWidth = renderedText.reduce((maxW, line) => {
-              let lineWidth = 0;
-              for (const char of line) {
-                let charRenderWidth = 0;
-                // Add a safety check to prevent the TypeError
-                if (!char) continue;
-
-                // New logic to handle the space character exception
-                if (char === fontData[" "]) {
-                  charRenderWidth = 2; // Force space to have a width of 2 pixels
-                } else {
-                  for (let x = 0; x < charWidth; x++) {
-                    let isColumnEmpty = true;
-                    for (let y = 0; y < charHeight; y++) {
-                      if (char[y * charWidth + x]) {
-                        isColumnEmpty = false;
-                        break;
-                      }
-                    }
-                    if (!isColumnEmpty) {
-                      charRenderWidth++;
-                    }
-                  }
-                }
-                lineWidth += charRenderWidth + charSpacing;
-              }
-              return Math.max(maxW, lineWidth - charSpacing);
-            }, 0);
-            const totalHeight =
-              lines.length * (charHeight + lineSpacing) - lineSpacing;
-
-            offscreenCanvas.width = totalWidth;
-            offscreenCanvas.height = totalHeight;
-            offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
-
-            let blackPixelCount = 0;
-            let currentY = 0;
-            for (const line of renderedText) {
-              let currentX = 0;
-              for (const charData of line) {
-                // Add a safety check to prevent the TypeError
-                if (!charData) continue;
-
-                let pixelXOffset = 0;
-                // New logic for space character exception
-                if (charData === fontData[" "]) {
-                  pixelXOffset = 2;
-                } else {
-                  for (let x = 0; x < charWidth; x++) {
-                    let isColumnEmpty = true;
-                    for (let y = 0; y < charHeight; y++) {
-                      if (charData[y * charWidth + x]) {
-                        isColumnEmpty = false;
-                        break;
-                      }
-                    }
-
-                    if (!isColumnEmpty) {
-                      for (let y = 0; y < charHeight; y++) {
-                        if (charData[y * charWidth + x]) {
-                          offscreenCtx.fillStyle = "black";
-                          offscreenCtx.fillRect(
-                            currentX + pixelXOffset * pixelSize,
-                            currentY + y * pixelSize,
-                            pixelSize,
-                            pixelSize
-                          );
-                          blackPixelCount++;
-                        }
-                      }
-                      pixelXOffset++;
-                    }
-                  }
-                }
-                currentX += pixelXOffset + charSpacing;
-              }
-              currentY += charHeight + lineSpacing;
+            // Determine font dimensions based on the data structure
+            const referenceChar =
+              fontData["A"] || fontData["a"] || fontData[" "];
+            if (!referenceChar) {
+              console.error(
+                "Could not find a reference character in the font data."
+              );
+              return 0;
             }
-            return blackPixelCount;
-          };
 
-          // Renders the new 3x5 custom font with variable character width
-          const renderMinifont3x5 = (
-            fontData,
-            text,
-            charSpacing = 1,
-            lineSpacing = 1
-          ) => {
-            if (!text || !fontData) return 0;
-            const charWidth = 3;
-            const charHeight = 5;
-            const pixelSize = 1;
-            const lines = text.split("\n");
-            const renderedText = lines.map((line) => {
-              return line
-                .split("")
-                .map(
-                  (char) =>
-                    fontData[char] ||
-                    fontData[char.toLowerCase()] ||
-                    fontData[" "]
-                );
-            });
+            let charWidth, charHeight;
+            let is2D = Array.isArray(referenceChar[0]);
 
-            // Calculate total width based on non-empty columns
-            const totalWidth = renderedText.reduce((maxW, line) => {
+            if (is2D) {
+              // 2D array format: [[0, 1, 0], [1, 0, 1]]
+              charWidth = referenceChar[0].length;
+              charHeight = referenceChar.length;
+            } else {
+              // 1D array format: [0, 1, 0, 1, 0, 1]
+              // We need to infer the height from the font type.
+              const fontName = Object.keys(fontBundle).find(
+                (key) => fontBundle[key] === fontData
+              );
+              if (fontName === "Microfont3x3") {
+                charWidth = 3;
+                charHeight = 3;
+              } else if (fontName === "threeXFiveMinifont") {
+                charWidth = 3;
+                charHeight = 5;
+              } else {
+                console.error("Unknown 1D font format.");
+                return 0;
+              }
+            }
+
+            // Calculate total dimensions
+            const totalWidth = lines.reduce((maxWidth, line) => {
               let lineWidth = 0;
               for (const char of line) {
-                let charRenderWidth = 0;
-                // Add a safety check to prevent the TypeError
-                if (!char) continue;
+                const charData =
+                  fontData[char] ||
+                  fontData[char.toLowerCase()] ||
+                  fontData[" "];
+                if (!charData) continue;
 
-                // New logic to handle the space character exception
-                if (char === fontData[" "]) {
-                  charRenderWidth = 2; // Force space to have a width of 2 pixels
+                let charRenderWidth = 0;
+                if (char === " ") {
+                  charRenderWidth = 2; // Fixed space width
                 } else {
+                  // Dynamically calculate character width based on non-empty columns
                   for (let x = 0; x < charWidth; x++) {
                     let isColumnEmpty = true;
                     for (let y = 0; y < charHeight; y++) {
-                      if (char[y * charWidth + x]) {
+                      // Accessing data based on format (1D vs 2D)
+                      const pixelValue = is2D
+                        ? charData[y][x]
+                        : charData[y * charWidth + x];
+                      if (pixelValue) {
                         isColumnEmpty = false;
                         break;
                       }
@@ -446,31 +371,39 @@
                 }
                 lineWidth += charRenderWidth + charSpacing;
               }
-              return Math.max(maxW, lineWidth - charSpacing);
+              return Math.max(maxWidth, lineWidth);
             }, 0);
+
             const totalHeight =
               lines.length * (charHeight + lineSpacing) - lineSpacing;
+
             offscreenCanvas.width = totalWidth;
             offscreenCanvas.height = totalHeight;
             offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
 
             let blackPixelCount = 0;
             let currentY = 0;
-            for (const line of renderedText) {
+
+            for (const line of lines) {
               let currentX = 0;
-              for (const charData of line) {
-                // Add a safety check to prevent the TypeError
+              for (const char of line) {
+                const charData =
+                  fontData[char] ||
+                  fontData[char.toLowerCase()] ||
+                  fontData[" "];
                 if (!charData) continue;
 
                 let pixelXOffset = 0;
-                // New logic for space character exception
-                if (charData === fontData[" "]) {
+                if (char === " ") {
                   pixelXOffset = 2;
                 } else {
                   for (let x = 0; x < charWidth; x++) {
                     let isColumnEmpty = true;
                     for (let y = 0; y < charHeight; y++) {
-                      if (charData[y * charWidth + x]) {
+                      const pixelValue = is2D
+                        ? charData[y][x]
+                        : charData[y * charWidth + x];
+                      if (pixelValue) {
                         isColumnEmpty = false;
                         break;
                       }
@@ -478,13 +411,16 @@
 
                     if (!isColumnEmpty) {
                       for (let y = 0; y < charHeight; y++) {
-                        if (charData[y * charWidth + x]) {
+                        const pixelValue = is2D
+                          ? charData[y][x]
+                          : charData[y * charWidth + x];
+                        if (pixelValue) {
                           offscreenCtx.fillStyle = "black";
                           offscreenCtx.fillRect(
-                            currentX + pixelXOffset * pixelSize,
-                            currentY + y * pixelSize,
-                            pixelSize,
-                            pixelSize
+                            currentX + pixelXOffset,
+                            currentY + y,
+                            1,
+                            1
                           );
                           blackPixelCount++;
                         }
@@ -508,10 +444,10 @@
 
             if (selectedFont === "custom-font") {
               fontHeightControls.style.display = "none";
-              pixelCount = renderMicrofont3x3(Microfont3x3, text);
+              pixelCount = renderPixelFont(fontBundle.Microfont3x3, text);
             } else if (selectedFont === "custom-3x5-minifont") {
               fontHeightControls.style.display = "none";
-              pixelCount = renderMinifont3x5(threeXFiveMinifont, text);
+              pixelCount = renderPixelFont(fontBundle.threeXFiveMinifont, text);
             } else {
               fontHeightControls.style.display = "flex";
               const fontStyle = fontSelect.value;
