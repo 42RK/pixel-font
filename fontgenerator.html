@@ -1,3 +1,4 @@
+<!-- Paste your code here -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -154,7 +155,9 @@
             <option value="'Space Mono', monospace">Space Mono</option>
             <option value="'Inconsolata', monospace">Inconsolata</option>
             <option value="'Cousine', monospace">Cousine</option>
-            <option value="'Source Code Pro', monospace">Source Code Pro</option>
+            <option value="'Source Code Pro', monospace">
+              Source Code Pro
+            </option>
             <option value="'Roboto Mono', monospace">Roboto Mono</option>
             <option value="'Fira Code', monospace">Fira Code</option>
             <option value="'Press Start 2P', cursive">Press Start 2P</option>
@@ -233,704 +236,533 @@
     </div>
 
     <script>
-      // Custom font data provided by the user
-      const Microfont3x3 = {
-        0: [1, 1, 1, 1, 0, 1, 1, 1, 1],
-        1: [1, 1, 0, 0, 1, 0, 0, 1, 0],
-        2: [1, 1, 0, 0, 1, 0, 0, 1, 1],
-        3: [1, 1, 1, 0, 1, 1, 1, 1, 1],
-        4: [1, 0, 1, 1, 1, 1, 0, 0, 1],
-        5: [0, 1, 1, 0, 1, 0, 1, 1, 0],
-        6: [1, 0, 0, 1, 1, 1, 1, 1, 1],
-        7: [1, 1, 1, 0, 1, 1, 0, 0, 1],
-        8: [1, 1, 1, 1, 1, 1, 1, 1, 1],
-        9: [1, 1, 1, 1, 1, 1, 0, 0, 1],
-        a: [0, 1, 1, 1, 1, 1, 1, 1, 1],
-        A: [0, 1, 1, 1, 1, 1, 1, 1, 1],
-        b: [1, 0, 0, 1, 1, 1, 1, 1, 1],
-        B: [1, 0, 0, 1, 1, 1, 1, 1, 1],
-        c: [1, 1, 1, 1, 0, 0, 1, 1, 1],
-        C: [1, 1, 1, 1, 0, 0, 1, 1, 1],
-        d: [0, 0, 1, 1, 1, 1, 1, 1, 1],
-        D: [0, 0, 1, 1, 1, 1, 1, 1, 1],
-        e: [1, 1, 1, 1, 1, 0, 1, 1, 1],
-        E: [1, 1, 1, 1, 1, 0, 1, 1, 1],
-        f: [1, 1, 1, 1, 1, 0, 1, 0, 0],
-        F: [1, 1, 1, 1, 1, 0, 1, 0, 0],
-        g: [1, 1, 0, 1, 1, 1, 1, 1, 1],
-        G: [1, 1, 0, 1, 1, 1, 1, 1, 1],
-        h: [1, 0, 1, 1, 1, 1, 1, 0, 1],
-        H: [1, 0, 1, 1, 1, 1, 1, 0, 1],
-        i: [1, 1, 1, 0, 1, 0, 1, 1, 1],
-        I: [1, 1, 1, 0, 1, 0, 1, 1, 1],
-        j: [1, 1, 1, 0, 1, 0, 1, 1, 0],
-        J: [1, 1, 1, 0, 1, 0, 1, 1, 0],
-        k: [1, 0, 1, 1, 1, 0, 1, 0, 1],
-        K: [1, 0, 1, 1, 1, 0, 1, 0, 1],
-        l: [1, 0, 0, 1, 0, 0, 1, 1, 1],
-        L: [1, 0, 0, 1, 0, 0, 1, 1, 1],
-        m: [1, 1, 1, 1, 1, 1, 1, 0, 1],
-        M: [1, 1, 1, 1, 1, 1, 1, 1, 1],
-        n: [1, 1, 1, 1, 0, 1, 1, 0, 1],
-        N: [1, 1, 1, 1, 0, 1, 1, 0, 1],
-        o: [1, 1, 1, 1, 0, 1, 1, 1, 1],
-        O: [1, 1, 1, 1, 0, 1, 1, 1, 1],
-        p: [1, 1, 1, 1, 1, 1, 1, 0, 0],
-        P: [1, 1, 1, 1, 1, 1, 1, 0, 0],
-        q: [1, 1, 1, 1, 1, 1, 0, 0, 1],
-        Q: [1, 1, 1, 1, 1, 1, 0, 0, 1],
-        r: [1, 1, 1, 1, 1, 0, 1, 0, 1],
-        R: [1, 1, 1, 1, 1, 0, 1, 0, 1],
-        s: [0, 1, 1, 0, 1, 0, 1, 1, 0],
-        S: [0, 1, 1, 0, 1, 0, 1, 1, 0],
-        t: [1, 1, 1, 0, 1, 0, 0, 1, 0],
-        T: [1, 1, 1, 0, 1, 0, 0, 1, 0],
-        u: [1, 0, 1, 1, 0, 1, 1, 1, 1],
-        U: [1, 0, 1, 1, 0, 1, 1, 1, 1],
-        v: [1, 0, 1, 1, 0, 1, 0, 1, 0],
-        V: [1, 0, 1, 1, 0, 1, 0, 1, 0],
-        w: [1, 0, 1, 1, 1, 1, 1, 1, 1],
-        W: [1, 0, 1, 1, 1, 1, 1, 1, 1],
-        x: [1, 0, 1, 0, 1, 0, 1, 0, 1],
-        X: [1, 0, 1, 0, 1, 0, 1, 0, 1],
-        y: [1, 0, 1, 1, 1, 1, 0, 1, 0],
-        Y: [1, 0, 1, 1, 1, 1, 0, 1, 0],
-        z: [1, 1, 0, 0, 1, 0, 0, 1, 1],
-        Z: [1, 1, 0, 0, 1, 0, 0, 1, 1],
-        "'": [0, 1, 0, 0, 0, 0, 0, 0, 0],
-        '"': [1, 0, 1, 0, 0, 0, 0, 0, 0],
-        "^": [0, 1, 0, 1, 0, 1, 0, 0, 0],
-        "-": [0, 0, 0, 1, 1, 1, 0, 0, 0],
-        "=": [1, 1, 1, 0, 0, 0, 1, 1, 1],
-        _: [0, 0, 0, 0, 0, 0, 1, 1, 1],
-        "+": [0, 1, 0, 1, 1, 1, 0, 1, 0],
-        "[": [1, 1, 0, 1, 0, 0, 1, 1, 0],
-        "]": [0, 1, 1, 0, 0, 1, 0, 1, 1],
-        "(": [0, 1, 1, 1, 1, 0, 0, 1, 1],
-        ")": [1, 1, 0, 0, 1, 1, 1, 1, 0],
-        "\\": [1, 0, 0, 0, 1, 0, 0, 0, 1],
-        "<": [0, 1, 0, 1, 0, 0, 0, 1, 0],
-        ">": [1, 0, 0, 0, 1, 0, 1, 0, 0],
-        "/": [0, 0, 1, 0, 1, 0, 1, 0, 0],
-        "|": [0, 1, 0, 0, 1, 0, 0, 1, 0],
-        " ": [0, 0, 0, 0, 0, 0, 0, 0, 0], // The added space character
-      };
+      let fontBundle = {};
+      let Microfont3x3;
+      let threeXFiveMinifont;
 
-      const threeXFiveMinifont = {
-        0: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        1: [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
-        2: [1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0],
-        3: [1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-        4: [1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0],
-        5: [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-        6: [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-        7: [1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0],
-        8: [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        9: [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-        a: [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-        A: [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0],
-        b: [1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        B: [1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        c: [0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0],
-        C: [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
-        d: [0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        D: [1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],
-        e: [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],
-        E: [1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
-        f: [0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0],
-        F: [1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0],
-        g: [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-        G: [1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        h: [1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
-        H: [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
-        i: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
-        I: [1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0],
-        j: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0],
-        J: [1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0],
-        k: [1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0],
-        K: [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0],
-        l: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-        L: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
-        m: [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0],
-        M: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0],
-        n: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
-        N: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0],
-        o: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        O: [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        p: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0],
-        P: [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-        q: [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1],
-        Q: [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0],
-        r: [0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0],
-        R: [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0],
-        s: [0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0],
-        S: [1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-        t: [0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0],
-        T: [1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
-        u: [0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        U: [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
-        v: [0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-        V: [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-        w: [0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-        W: [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-        x: [0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0],
-        X: [1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0],
-        y: [0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0],
-        Y: [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0],
-        z: [0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0],
-        Z: [1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0],
-        "'": [0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        '"': [1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "^": [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-        "-": [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "=": [1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
-        _: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-        "+": [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0],
-        "[": [1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-        "]": [0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0],
-        "(": [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-        ")": [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0],
-        "\\": [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-        "<": [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0],
-        ">": [0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
-        "/": [0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
-        "|": [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
-        $: [1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-        "%": [1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0],
-        "*": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-        "`": [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "?": [1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-        ".": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-        ",": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
-        ":": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-        ";": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
-        "!": [
-          0,
-          1,
-          0, // Ascender
-          0,
-          1,
-          0, // Top row
-          0,
-          0,
-          0, // Middle row
-          0,
-          1,
-          0, // Bottom row
-          0,
-          0,
-          0, // Descender
-        ],
-        " ": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      };
+      fetch("fonts.json")
+        .then((response) => response.json())
+        .then((data) => {
+          fontBundle = data;
+          console.log("Loaded JSON keys:", Object.keys(data));
 
-      // Get references to all DOM elements
-      const textInput = document.getElementById("textInput");
-      const fontSelect = document.getElementById("fontSelect");
-      const prevFontBtn = document.getElementById("prevFontBtn");
-      const nextFontBtn = document.getElementById("nextFontBtn");
-      const fontHeightControls = document.getElementById("fontHeightControls");
-      const fontHeightDisplay = document.getElementById("fontHeightDisplay");
-      const decreaseSizeBtn = document.getElementById("decreaseSize");
-      const increaseSizeBtn = document.getElementById("increaseSize");
-      const previewCanvas = document.getElementById("previewCanvas");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const hintText = document.getElementById("hintText");
-      const pixelCountText = document.getElementById("pixelCount");
-      const previewContainer = document.getElementById("previewContainer");
+          const Microfont3x3 = fontBundle.Microfont3x3;
+          const threeXFiveMinifont = fontBundle.threeXFiveMinifont;
 
-      // Create an offscreen canvas to handle the base text rendering
-      const offscreenCanvas = document.createElement("canvas");
-      const offscreenCtx = offscreenCanvas.getContext("2d");
-      const previewCtx = previewCanvas.getContext("2d");
+          // Now that fonts are loaded, get references and set up listeners
+          const textInput = document.getElementById("textInput");
+          const fontSelect = document.getElementById("fontSelect");
+          const prevFontBtn = document.getElementById("prevFontBtn");
+          const nextFontBtn = document.getElementById("nextFontBtn");
+          const fontHeightControls =
+            document.getElementById("fontHeightControls");
+          const fontHeightDisplay =
+            document.getElementById("fontHeightDisplay");
+          const decreaseSizeBtn = document.getElementById("decreaseSize");
+          const increaseSizeBtn = document.getElementById("increaseSize");
+          const previewCanvas = document.getElementById("previewCanvas");
+          const downloadBtn = document.getElementById("downloadBtn");
+          const hintText = document.getElementById("hintText");
+          const pixelCountText = document.getElementById("pixelCount");
+          const previewContainer = document.getElementById("previewContainer");
 
-      let zoomLevel = 4; // Initial zoom level
-      const maxZoom = 15;
-      const minZoom = 1;
-      let fontHeight = 16; // State variable for font height
+          // Create an offscreen canvas to handle the base text rendering
+          const offscreenCanvas = document.createElement("canvas");
+          const offscreenCtx = offscreenCanvas.getContext("2d");
+          const previewCtx = previewCanvas.getContext("2d");
 
-      let panX = 0;
-      let panY = 0;
-      let isPanning = false;
-      let lastMouseX = 0;
-      let lastMouseY = 0;
-      let lastPixelCount = 0;
+          let zoomLevel = 4; // Initial zoom level
+          const maxZoom = 15;
+          const minZoom = 1;
+          let fontHeight = 16; // State variable for font height
 
-      let touchStartX = 0;
-      let touchStartY = 0;
-      let lastDist = null;
+          let panX = 0;
+          let panY = 0;
+          let isPanning = false;
+          let lastMouseX = 0;
+          let lastMouseY = 0;
+          let lastPixelCount = 0;
 
-      const isCustomFontSelected = () => {
-        return fontSelect.value.startsWith("custom-");
-      };
+          let touchStartX = 0;
+          let touchStartY = 0;
+          let lastDist = null;
 
-      // Renders the 3x3 custom font with variable character width
-      const renderMicrofont3x3 = (
-        fontData,
-        text,
-        charSpacing = 1,
-        lineSpacing = 1
-      ) => {
-        if (!text || !fontData) return 0;
-        const charWidth = 3;
-        const charHeight = 3;
-        const pixelSize = 1;
-        const lines = text.split("\n");
-        const renderedText = lines.map((line) => {
-          return line
-            .split("")
-            .map(
-              (char) =>
-                fontData[char] || fontData[char.toLowerCase()] || fontData[" "]
-            );
-        });
+          const isCustomFontSelected = () => {
+            return fontSelect.value.startsWith("custom-");
+          };
 
-        // Calculate total width based on non-empty columns
-        const totalWidth = renderedText.reduce((maxW, line) => {
-          let lineWidth = 0;
-          for (const char of line) {
-            let charRenderWidth = 0;
-            // Add a safety check to prevent the TypeError
-            if (!char) continue;
-            
-            // New logic to handle the space character exception
-            if (char === fontData[' ']) {
-              charRenderWidth = 2; // Force space to have a width of 2 pixels
-            } else {
-              for (let x = 0; x < charWidth; x++) {
-                let isColumnEmpty = true;
-                for (let y = 0; y < charHeight; y++) {
-                  if (char[y * charWidth + x]) {
-                    isColumnEmpty = false;
-                    break;
-                  }
-                }
-                if (!isColumnEmpty) {
-                  charRenderWidth++;
-                }
-              }
-            }
-            lineWidth += charRenderWidth + charSpacing;
-          }
-          return Math.max(maxW, lineWidth - charSpacing);
-        }, 0);
-        const totalHeight =
-          lines.length * (charHeight + lineSpacing) - lineSpacing;
+          // Renders the 3x3 custom font with variable character width
+          const renderMicrofont3x3 = (
+            fontData,
+            text,
+            charSpacing = 1,
+            lineSpacing = 1
+          ) => {
+            if (!text || !fontData) return 0;
+            const charWidth = 3;
+            const charHeight = 3;
+            const pixelSize = 1;
+            const lines = text.split("\n");
+            const renderedText = lines.map((line) => {
+              return line
+                .split("")
+                .map(
+                  (char) =>
+                    fontData[char] ||
+                    fontData[char.toLowerCase()] ||
+                    fontData[" "]
+                );
+            });
 
-        offscreenCanvas.width = totalWidth;
-        offscreenCanvas.height = totalHeight;
-        offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
+            // Calculate total width based on non-empty columns
+            const totalWidth = renderedText.reduce((maxW, line) => {
+              let lineWidth = 0;
+              for (const char of line) {
+                let charRenderWidth = 0;
+                // Add a safety check to prevent the TypeError
+                if (!char) continue;
 
-        let blackPixelCount = 0;
-        let currentY = 0;
-        for (const line of renderedText) {
-          let currentX = 0;
-          for (const charData of line) {
-            // Add a safety check to prevent the TypeError
-            if (!charData) continue;
-            
-            let pixelXOffset = 0;
-            // New logic for space character exception
-            if (charData === fontData[' ']) {
-              pixelXOffset = 2;
-            } else {
-              for (let x = 0; x < charWidth; x++) {
-                let isColumnEmpty = true;
-                for (let y = 0; y < charHeight; y++) {
-                  if (charData[y * charWidth + x]) {
-                    isColumnEmpty = false;
-                    break;
-                  }
-                }
-                if (!isColumnEmpty) {
-                  for (let y = 0; y < charHeight; y++) {
-                    if (charData[y * charWidth + x]) {
-                      offscreenCtx.fillStyle = "black";
-                      offscreenCtx.fillRect(
-                        currentX + pixelXOffset * pixelSize,
-                        currentY + y * pixelSize,
-                        pixelSize,
-                        pixelSize
-                      );
-                      blackPixelCount++;
+                // New logic to handle the space character exception
+                if (char === fontData[" "]) {
+                  charRenderWidth = 2; // Force space to have a width of 2 pixels
+                } else {
+                  for (let x = 0; x < charWidth; x++) {
+                    let isColumnEmpty = true;
+                    for (let y = 0; y < charHeight; y++) {
+                      if (char[y * charWidth + x]) {
+                        isColumnEmpty = false;
+                        break;
+                      }
+                    }
+                    if (!isColumnEmpty) {
+                      charRenderWidth++;
                     }
                   }
-                  pixelXOffset++;
                 }
+                lineWidth += charRenderWidth + charSpacing;
               }
-            }
-            currentX += pixelXOffset + charSpacing;
-          }
-          currentY += charHeight + lineSpacing;
-        }
-        return blackPixelCount;
-      };
+              return Math.max(maxW, lineWidth - charSpacing);
+            }, 0);
+            const totalHeight =
+              lines.length * (charHeight + lineSpacing) - lineSpacing;
 
-      // Renders the new 3x5 custom font with variable character width
-      const renderMinifont3x5 = (
-        fontData,
-        text,
-        charSpacing = 1,
-        lineSpacing = 1
-      ) => {
-        if (!text || !fontData) return 0;
-        const charWidth = 3;
-        const charHeight = 5;
-        const pixelSize = 1;
-        const lines = text.split("\n");
-        const renderedText = lines.map((line) => {
-          return line
-            .split("")
-            .map(
-              (char) =>
-                fontData[char] || fontData[char.toLowerCase()] || fontData[" "]
-            );
-        });
+            offscreenCanvas.width = totalWidth;
+            offscreenCanvas.height = totalHeight;
+            offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
 
-        // Calculate total width based on non-empty columns
-        const totalWidth = renderedText.reduce((maxW, line) => {
-          let lineWidth = 0;
-          for (const char of line) {
-            let charRenderWidth = 0;
-            // Add a safety check to prevent the TypeError
-            if (!char) continue;
-            
-            // New logic to handle the space character exception
-            if (char === fontData[' ']) {
-              charRenderWidth = 2; // Force space to have a width of 2 pixels
-            } else {
-              for (let x = 0; x < charWidth; x++) {
-                let isColumnEmpty = true;
-                for (let y = 0; y < charHeight; y++) {
-                  if (char[y * charWidth + x]) {
-                    isColumnEmpty = false;
-                    break;
-                  }
-                }
-                if (!isColumnEmpty) {
-                  charRenderWidth++;
-                }
-              }
-            }
-            lineWidth += charRenderWidth + charSpacing;
-          }
-          return Math.max(maxW, lineWidth - charSpacing);
-        }, 0);
-        const totalHeight =
-          lines.length * (charHeight + lineSpacing) - lineSpacing;
-        offscreenCanvas.width = totalWidth;
-        offscreenCanvas.height = totalHeight;
-        offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
+            let blackPixelCount = 0;
+            let currentY = 0;
+            for (const line of renderedText) {
+              let currentX = 0;
+              for (const charData of line) {
+                // Add a safety check to prevent the TypeError
+                if (!charData) continue;
 
-        let blackPixelCount = 0;
-        let currentY = 0;
-        for (const line of renderedText) {
-          let currentX = 0;
-          for (const charData of line) {
-            // Add a safety check to prevent the TypeError
-            if (!charData) continue;
-            
-            let pixelXOffset = 0;
-            // New logic for space character exception
-            if (charData === fontData[' ']) {
-              pixelXOffset = 2;
-            } else {
-              for (let x = 0; x < charWidth; x++) {
-                let isColumnEmpty = true;
-                for (let y = 0; y < charHeight; y++) {
-                  if (charData[y * charWidth + x]) {
-                    isColumnEmpty = false;
-                    break;
-                  }
-                }
+                let pixelXOffset = 0;
+                // New logic for space character exception
+                if (charData === fontData[" "]) {
+                  pixelXOffset = 2;
+                } else {
+                  for (let x = 0; x < charWidth; x++) {
+                    let isColumnEmpty = true;
+                    for (let y = 0; y < charHeight; y++) {
+                      if (charData[y * charWidth + x]) {
+                        isColumnEmpty = false;
+                        break;
+                      }
+                    }
 
-                if (!isColumnEmpty) {
-                  for (let y = 0; y < charHeight; y++) {
-                    if (charData[y * charWidth + x]) {
-                      offscreenCtx.fillStyle = "black";
-                      offscreenCtx.fillRect(
-                        currentX + pixelXOffset * pixelSize,
-                        currentY + y * pixelSize,
-                        pixelSize,
-                        pixelSize
-                      );
-                      blackPixelCount++;
+                    if (!isColumnEmpty) {
+                      for (let y = 0; y < charHeight; y++) {
+                        if (charData[y * charWidth + x]) {
+                          offscreenCtx.fillStyle = "black";
+                          offscreenCtx.fillRect(
+                            currentX + pixelXOffset * pixelSize,
+                            currentY + y * pixelSize,
+                            pixelSize,
+                            pixelSize
+                          );
+                          blackPixelCount++;
+                        }
+                      }
+                      pixelXOffset++;
                     }
                   }
-                  pixelXOffset++;
+                }
+                currentX += pixelXOffset + charSpacing;
+              }
+              currentY += charHeight + lineSpacing;
+            }
+            return blackPixelCount;
+          };
+
+          // Renders the new 3x5 custom font with variable character width
+          const renderMinifont3x5 = (
+            fontData,
+            text,
+            charSpacing = 1,
+            lineSpacing = 1
+          ) => {
+            if (!text || !fontData) return 0;
+            const charWidth = 3;
+            const charHeight = 5;
+            const pixelSize = 1;
+            const lines = text.split("\n");
+            const renderedText = lines.map((line) => {
+              return line
+                .split("")
+                .map(
+                  (char) =>
+                    fontData[char] ||
+                    fontData[char.toLowerCase()] ||
+                    fontData[" "]
+                );
+            });
+
+            // Calculate total width based on non-empty columns
+            const totalWidth = renderedText.reduce((maxW, line) => {
+              let lineWidth = 0;
+              for (const char of line) {
+                let charRenderWidth = 0;
+                // Add a safety check to prevent the TypeError
+                if (!char) continue;
+
+                // New logic to handle the space character exception
+                if (char === fontData[" "]) {
+                  charRenderWidth = 2; // Force space to have a width of 2 pixels
+                } else {
+                  for (let x = 0; x < charWidth; x++) {
+                    let isColumnEmpty = true;
+                    for (let y = 0; y < charHeight; y++) {
+                      if (char[y * charWidth + x]) {
+                        isColumnEmpty = false;
+                        break;
+                      }
+                    }
+                    if (!isColumnEmpty) {
+                      charRenderWidth++;
+                    }
+                  }
+                }
+                lineWidth += charRenderWidth + charSpacing;
+              }
+              return Math.max(maxW, lineWidth - charSpacing);
+            }, 0);
+            const totalHeight =
+              lines.length * (charHeight + lineSpacing) - lineSpacing;
+            offscreenCanvas.width = totalWidth;
+            offscreenCanvas.height = totalHeight;
+            offscreenCtx.clearRect(0, 0, totalWidth, totalHeight);
+
+            let blackPixelCount = 0;
+            let currentY = 0;
+            for (const line of renderedText) {
+              let currentX = 0;
+              for (const charData of line) {
+                // Add a safety check to prevent the TypeError
+                if (!charData) continue;
+
+                let pixelXOffset = 0;
+                // New logic for space character exception
+                if (charData === fontData[" "]) {
+                  pixelXOffset = 2;
+                } else {
+                  for (let x = 0; x < charWidth; x++) {
+                    let isColumnEmpty = true;
+                    for (let y = 0; y < charHeight; y++) {
+                      if (charData[y * charWidth + x]) {
+                        isColumnEmpty = false;
+                        break;
+                      }
+                    }
+
+                    if (!isColumnEmpty) {
+                      for (let y = 0; y < charHeight; y++) {
+                        if (charData[y * charWidth + x]) {
+                          offscreenCtx.fillStyle = "black";
+                          offscreenCtx.fillRect(
+                            currentX + pixelXOffset * pixelSize,
+                            currentY + y * pixelSize,
+                            pixelSize,
+                            pixelSize
+                          );
+                          blackPixelCount++;
+                        }
+                      }
+                      pixelXOffset++;
+                    }
+                  }
+                }
+                currentX += pixelXOffset + charSpacing;
+              }
+              currentY += charHeight + lineSpacing;
+            }
+            return blackPixelCount;
+          };
+
+          // Function to draw text on the offscreen canvas
+          const renderOffscreenText = () => {
+            const text = textInput.value;
+            const selectedFont = fontSelect.value;
+            let pixelCount = 0;
+
+            if (selectedFont === "custom-font") {
+              fontHeightControls.style.display = "none";
+              pixelCount = renderMicrofont3x3(Microfont3x3, text);
+            } else if (selectedFont === "custom-3x5-minifont") {
+              fontHeightControls.style.display = "none";
+              pixelCount = renderMinifont3x5(threeXFiveMinifont, text);
+            } else {
+              fontHeightControls.style.display = "flex";
+              const fontStyle = fontSelect.value;
+              const lines = text.split("\n");
+
+              // Set the font to measure dimensions accurately
+              offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
+              let maxTextWidth = 0;
+              let textHeight = fontHeight;
+              for (const line of lines) {
+                maxTextWidth = Math.max(
+                  maxTextWidth,
+                  offscreenCtx.measureText(line).width
+                );
+              }
+
+              const lineHeight = textHeight * 1.2; // A bit of extra space for line breaks
+              const totalHeight = lines.length * lineHeight;
+              const padding = 10;
+
+              offscreenCanvas.width = Math.max(1, maxTextWidth + padding * 2);
+              offscreenCanvas.height = Math.max(1, totalHeight + padding * 2);
+
+              // Clear the offscreen canvas with a transparent background
+              offscreenCtx.clearRect(
+                0,
+                0,
+                offscreenCanvas.width,
+                offscreenCanvas.height
+              );
+
+              // Draw the text line by line
+              offscreenCtx.fillStyle = "black";
+              offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
+              for (let i = 0; i < lines.length; i++) {
+                offscreenCtx.fillText(
+                  lines[i],
+                  padding,
+                  padding + i * lineHeight + textHeight * 0.75
+                );
+              }
+
+              // Convert to 1-bit: black or transparent
+              const imageData = offscreenCtx.getImageData(
+                0,
+                0,
+                offscreenCanvas.width,
+                offscreenCanvas.height
+              );
+              const data = imageData.data;
+
+              for (let i = 0; i < data.length; i += 4) {
+                // Check if the pixel is not fully transparent
+                if (data[i + 3] > 0) {
+                  if (data[i] < 200) {
+                    data[i] = 0;
+                    data[i + 1] = 0;
+                    data[i + 2] = 0;
+                    data[i + 3] = 255;
+                    pixelCount++;
+                  } else {
+                    data[i + 3] = 0;
+                  }
                 }
               }
+              offscreenCtx.putImageData(imageData, 0, 0);
             }
-            currentX += pixelXOffset + charSpacing;
-          }
-          currentY += charHeight + lineSpacing;
-        }
-        return blackPixelCount;
-      };
 
-      // Function to draw text on the offscreen canvas
-      const renderOffscreenText = () => {
-        const text = textInput.value;
-        const selectedFont = fontSelect.value;
-        let pixelCount = 0;
+            // Update the pixel count display with color flash animation
+            pixelCountText.textContent = `Pixel Count: ${pixelCount}`;
+            pixelCountText.classList.remove("flash-red", "flash-green");
 
-        if (selectedFont === "custom-font") {
-          fontHeightControls.style.display = "none";
-          pixelCount = renderMicrofont3x3(Microfont3x3, text);
-        } else if (selectedFont === "custom-3x5-minifont") {
-          fontHeightControls.style.display = "none";
-          pixelCount = renderMinifont3x5(threeXFiveMinifont, text);
-        } else {
-          fontHeightControls.style.display = "flex";
-          const fontStyle = fontSelect.value;
-          const lines = text.split("\n");
+            // Force reflow to restart the animation
+            void pixelCountText.offsetWidth;
 
-          // Set the font to measure dimensions accurately
-          offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
-          let maxTextWidth = 0;
-          let textHeight = fontHeight;
-          for (const line of lines) {
-            maxTextWidth = Math.max(
-              maxTextWidth,
-              offscreenCtx.measureText(line).width
-            );
-          }
-
-          const lineHeight = textHeight * 1.2; // A bit of extra space for line breaks
-          const totalHeight = lines.length * lineHeight;
-          const padding = 10;
-
-          offscreenCanvas.width = Math.max(1, maxTextWidth + padding * 2);
-          offscreenCanvas.height = Math.max(1, totalHeight + padding * 2);
-
-          // Clear the offscreen canvas with a transparent background
-          offscreenCtx.clearRect(
-            0,
-            0,
-            offscreenCanvas.width,
-            offscreenCanvas.height
-          );
-
-          // Draw the text line by line
-          offscreenCtx.fillStyle = "black";
-          offscreenCtx.font = `${fontHeight}px ${fontStyle}`;
-          for (let i = 0; i < lines.length; i++) {
-            offscreenCtx.fillText(
-              lines[i],
-              padding,
-              padding + i * lineHeight + textHeight * 0.75
-            );
-          }
-
-          // Convert to 1-bit: black or transparent
-          const imageData = offscreenCtx.getImageData(
-            0,
-            0,
-            offscreenCanvas.width,
-            offscreenCanvas.height
-          );
-          const data = imageData.data;
-
-          for (let i = 0; i < data.length; i += 4) {
-            // Check if the pixel is not fully transparent
-            if (data[i + 3] > 0) {
-              if (data[i] < 200) {
-                data[i] = 0;
-                data[i + 1] = 0;
-                data[i + 2] = 0;
-                data[i + 3] = 255;
-                pixelCount++;
-              } else {
-                data[i + 3] = 0;
-              }
+            // --- NEW BEHAVIOR: flash red on increase, green on decrease ---
+            if (pixelCount > lastPixelCount) {
+              pixelCountText.classList.add("flash-red");
+            } else if (pixelCount < lastPixelCount) {
+              pixelCountText.classList.add("flash-green");
             }
-          }
-          offscreenCtx.putImageData(imageData, 0, 0);
-        }
+            // -----------------------------------------------------------
 
-        // Update the pixel count display with color flash animation
-        pixelCountText.textContent = `Pixel Count: ${pixelCount}`;
-        pixelCountText.classList.remove("flash-red", "flash-green");
+            lastPixelCount = pixelCount;
+          };
 
-        // Force reflow to restart the animation
-        void pixelCountText.offsetWidth;
+          // Function to draw the grid
+          const drawGrid = () => {
+            previewCtx.strokeStyle = "rgba(229, 229, 229, 0.5)";
+            previewCtx.lineWidth = 1 / zoomLevel;
+            previewCtx.beginPath();
+            const offscreenW = offscreenCanvas.width;
+            const offscreenH = offscreenCanvas.height;
 
-        // --- NEW BEHAVIOR: flash red on increase, green on decrease ---
-        if (pixelCount > lastPixelCount) {
-          pixelCountText.classList.add("flash-red");
-        } else if (pixelCount < lastPixelCount) {
-          pixelCountText.classList.add("flash-green");
-        }
-        // -----------------------------------------------------------
+            // Shift grid drawing by half a pixel to align with pixel corners
+            for (let x = 0; x <= offscreenW; x += 1) {
+              previewCtx.moveTo(x, 0);
+              previewCtx.lineTo(x, offscreenH);
+            }
+            for (let y = 0; y <= offscreenH; y += 1) {
+              previewCtx.moveTo(0, y);
+              previewCtx.lineTo(offscreenW, y);
+            }
+            previewCtx.stroke();
+          };
 
-        lastPixelCount = pixelCount;
-      };
+          // Function to render the visible canvas with pan and zoom
+          const drawPreview = () => {
+            const containerWidth = previewContainer.offsetWidth;
+            const containerHeight = previewContainer.offsetHeight;
 
-      // Function to draw the grid
-      const drawGrid = () => {
-        previewCtx.strokeStyle = "rgba(229, 229, 229, 0.5)";
-        previewCtx.lineWidth = 1 / zoomLevel;
-        previewCtx.beginPath();
-        const offscreenW = offscreenCanvas.width;
-        const offscreenH = offscreenCanvas.height;
+            previewCanvas.width = containerWidth;
+            previewCanvas.height = containerHeight;
 
-        // Shift grid drawing by half a pixel to align with pixel corners
-        for (let x = 0; x <= offscreenW; x += 1) {
-          previewCtx.moveTo(x, 0);
-          previewCtx.lineTo(x, offscreenH);
-        }
-        for (let y = 0; y <= offscreenH; y += 1) {
-          previewCtx.moveTo(0, y);
-          previewCtx.lineTo(offscreenW, y);
-        }
-        previewCtx.stroke();
-      };
+            // Set canvas background color
+            previewCtx.fillStyle = "#f0f0f0";
+            previewCtx.fillRect(0, 0, containerWidth, containerHeight);
 
-      // Function to render the visible canvas with pan and zoom
-      const drawPreview = () => {
-        const containerWidth = previewContainer.offsetWidth;
-        const containerHeight = previewContainer.offsetHeight;
+            previewCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
 
-        previewCanvas.width = containerWidth;
-        previewCanvas.height = containerHeight;
+            // Apply transformations
+            previewCtx.save();
+            previewCtx.translate(panX, panY);
+            previewCtx.scale(zoomLevel, zoomLevel);
 
-        // Set canvas background color
-        previewCtx.fillStyle = "#f0f0f0";
-        previewCtx.fillRect(0, 0, containerWidth, containerHeight);
+            // Draw the offscreen canvas content onto the preview canvas
+            previewCtx.drawImage(offscreenCanvas, 0, 0);
 
-        previewCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
+            // Draw the grid in the transformed space
+            drawGrid();
+            previewCtx.restore();
+          };
 
-        // Apply transformations
-        previewCtx.save();
-        previewCtx.translate(panX, panY);
-        previewCtx.scale(zoomLevel, zoomLevel);
+          const handleWheel = (event) => {
+            event.preventDefault(); // Prevent page scrolling
+            hintText.classList.add("hidden");
 
-        // Draw the offscreen canvas content onto the preview canvas
-        previewCtx.drawImage(offscreenCanvas, 0, 0);
+            const oldZoom = zoomLevel;
+            if (event.deltaY < 0) {
+              zoomLevel = Math.min(zoomLevel + 1, maxZoom);
+            } else {
+              zoomLevel = Math.max(zoomLevel - 1, minZoom);
+            }
 
-        // Draw the grid in the transformed space
-        drawGrid();
-        previewCtx.restore();
-      };
+            // Recalculate pan to keep the point under the cursor in the same location
+            const containerRect = previewContainer.getBoundingClientRect();
+            const mouseX = event.clientX - containerRect.left;
+            const mouseY = event.clientY - containerRect.top;
 
-      const handleWheel = (event) => {
-        event.preventDefault(); // Prevent page scrolling
-        hintText.classList.add("hidden");
+            panX = mouseX - (mouseX - panX) * (oldZoom / zoomLevel);
+            panY = mouseY - (mouseY - panY) * (oldZoom / zoomLevel);
 
-        const oldZoom = zoomLevel;
-        if (event.deltaY < 0) {
-          zoomLevel = Math.min(zoomLevel + 1, maxZoom);
-        } else {
-          zoomLevel = Math.max(zoomLevel - 1, minZoom);
-        }
+            drawPreview();
+          };
 
-        // Recalculate pan to keep the point under the cursor in the same location
-        const containerRect = previewContainer.getBoundingClientRect();
-        const mouseX = event.clientX - containerRect.left;
-        const mouseY = event.clientY - containerRect.top;
+          const handleMouseDown = (event) => {
+            isPanning = true;
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
+            previewContainer.style.cursor = "grabbing";
+            hintText.classList.add("hidden");
+          };
 
-        panX = mouseX - (mouseX - panX) * (oldZoom / zoomLevel);
-        panY = mouseY - (mouseY - panY) * (oldZoom / zoomLevel);
+          const handleMouseMove = (event) => {
+            if (!isPanning) return;
 
-        drawPreview();
-      };
+            const dx = event.clientX - lastMouseX;
+            const dy = event.clientY - lastMouseY;
 
-      const handleMouseDown = (event) => {
-        isPanning = true;
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
-        previewContainer.style.cursor = "grabbing";
-        hintText.classList.add("hidden");
-      };
+            // Pan faithfully to mouse movement
+            panX += dx;
+            panY += dy;
 
-      const handleMouseMove = (event) => {
-        if (!isPanning) return;
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
 
-        const dx = event.clientX - lastMouseX;
-        const dy = event.clientY - lastMouseY;
+            drawPreview();
+          };
 
-        // Pan faithfully to mouse movement
-        panX += dx;
-        panY += dy;
+          const handleMouseUp = () => {
+            isPanning = false;
+            previewContainer.style.cursor = "grab";
+          };
 
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
+          const handleTouchStart = (event) => {
+            if (event.touches.length === 1) {
+              const touch = event.touches[0];
+              isPanning = true;
+              touchStartX = touch.clientX;
+              touchStartY = touch.clientY;
+            } else if (event.touches.length === 2) {
+              lastDist = getDistance(event.touches[0], event.touches[1]);
+            }
+            hintText.classList.add("hidden");
+          };
 
-        drawPreview();
-      };
+          const handleTouchMove = (event) => {
+            event.preventDefault(); // Prevent scrolling
+            if (event.touches.length === 1 && isPanning) {
+              const touch = event.touches[0];
+              const dx = touch.clientX - touchStartX;
+              const dy = touch.clientY - touchStartY;
 
-      const handleMouseUp = () => {
-        isPanning = false;
-        previewContainer.style.cursor = "grab";
-      };
+              // Pan faithfully to touch movement
+              panX += dx;
+              panY += dy;
 
-      const handleTouchStart = (event) => {
-        if (event.touches.length === 1) {
-          const touch = event.touches[0];
-          isPanning = true;
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-        } else if (event.touches.length === 2) {
-          lastDist = getDistance(event.touches[0], event.touches[1]);
-        }
-        hintText.classList.add("hidden");
-      };
+              touchStartX = touch.clientX;
+              touchStartY = touch.clientY;
+              drawPreview();
+            } else if (event.touches.length === 2 && lastDist !== null) {
+              const dist = getDistance(event.touches[0], event.touches[1]);
+              const oldZoom = zoomLevel;
+              const sensitivity = 0.05;
+              zoomLevel = Math.max(
+                minZoom,
+                Math.min(maxZoom, zoomLevel + (dist - lastDist) * sensitivity)
+              );
+              lastDist = dist;
 
-      const handleTouchMove = (event) => {
-        event.preventDefault(); // Prevent scrolling
-        if (event.touches.length === 1 && isPanning) {
-          const touch = event.touches[0];
-          const dx = touch.clientX - touchStartX;
-          const dy = touch.clientY - touchStartY;
-          
-          // Pan faithfully to touch movement
-          panX += dx;
-          panY += dy;
+              // Simple zoom centering
+              const containerRect = previewContainer.getBoundingClientRect();
+              const centerX =
+                (event.touches[0].clientX + event.touches[1].clientX) / 2 -
+                containerRect.left;
+              const centerY =
+                (event.touches[0].clientY + event.touches[1].clientY) / 2 -
+                containerRect.top;
 
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-          drawPreview();
-        } else if (event.touches.length === 2 && lastDist !== null) {
-          const dist = getDistance(event.touches[0], event.touches[1]);
-          const oldZoom = zoomLevel;
-          const sensitivity = 0.05;
-          zoomLevel = Math.max(
-            minZoom,
-            Math.min(maxZoom, zoomLevel + (dist - lastDist) * sensitivity)
-          );
-          lastDist = dist;
+              panX = centerX - (centerX - panX) * (oldZoom / zoomLevel);
+              panY = centerY - (centerY - panY) * (oldZoom / zoomLevel);
+              drawPreview();
+            }
+          };
 
-          // Simple zoom centering
-          const containerRect = previewContainer.getBoundingClientRect();
-          const centerX =
-            (event.touches[0].clientX + event.touches[1].clientX) / 2 -
-            containerRect.left;
-          const centerY =
-            (event.touches[0].clientY + event.touches[1].clientY) / 2 -
-            containerRect.top;
+          const handleTouchEnd = () => {
+            isPanning = false;
+            lastDist = null;
+          };
 
-          panX = centerX - (centerX - panX) * (oldZoom / zoomLevel);
-          panY = centerY - (centerY - panY) * (oldZoom / zoomLevel);
-          drawPreview();
-        }
-      };
+          const getDistance = (touch1, touch2) => {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+          };
 
-      const handleTouchEnd = () => {
-        isPanning = false;
-        lastDist = null;
-      };
-
-      const getDistance = (touch1, touch2) => {
-        const dx = touch1.clientX - touch2.clientX;
-        const dy = touch1.clientY - touch2.clientY;
-        return Math.sqrt(dx * dx + dy * dy);
-      };
-
-      // Function to download the canvas as a PNG
-      const downloadImage = () => {
-        if (textInput.value.trim() === "") {
-          const messageBox = document.createElement("div");
-          messageBox.style.cssText = `
+          // Function to download the canvas as a PNG
+          const downloadImage = () => {
+            if (textInput.value.trim() === "") {
+              const messageBox = document.createElement("div");
+              messageBox.style.cssText = `
                     position: fixed;
                     top: 50%;
                     left: 50%;
@@ -943,131 +775,128 @@
                     z-index: 1000;
                     text-align: center;
                 `;
-          messageBox.innerHTML = `<p>Please enter some text to generate an image.</p><button onclick="this.parentNode.remove()" style="margin-top: 10px; padding: 5px 10px; background-color: #555; color: white; border: none; border-radius: 4px;">OK</button>`;
-          document.body.appendChild(messageBox);
-          return;
-        }
+              messageBox.innerHTML = `<p>Please enter some text to generate an image.</p><button onclick="this.parentNode.remove()" style="margin-top: 10px; padding: 5px 10px; background-color: #555; color: white; border: none; border-radius: 4px;">OK</button>`;
+              document.body.appendChild(messageBox);
+              return;
+            }
 
-        // Use the offscreen canvas for download to ensure original quality
-        const link = document.createElement("a");
-        link.download = `pixel_font_${textInput.value.replace(
-          /[^a-zA-Z0-9\n]/g,
-          "_"
-        )}.png`;
-        link.href = offscreenCanvas.toDataURL("image/png");
-        link.click();
-      };
+            // Use the offscreen canvas for download to ensure original quality
+            const link = document.createElement("a");
+            link.download = `pixel_font_${textInput.value.replace(
+              /[^a-zA-Z0-9\n]/g,
+              "_"
+            )}.png`;
+            link.href = offscreenCanvas.toDataURL("image/png");
+            link.click();
+          };
 
-      // Event listener to handle font selection changes
-      fontSelect.addEventListener("change", () => {
-        if (isCustomFontSelected()) {
-          fontHeightControls.style.display = "none";
-        } else {
-          fontHeightControls.style.display = "flex";
-        }
-        renderOffscreenText();
-        // Re-center on font change
-        panX =
-          previewContainer.offsetWidth / 2 -
-          (offscreenCanvas.width * zoomLevel) / 2;
-        panY =
-          previewContainer.offsetHeight / 2 -
-          (offscreenCanvas.height * zoomLevel) / 2;
-        drawPreview();
-      });
+          // Event listener to handle font selection changes
+          fontSelect.addEventListener("change", () => {
+            if (isCustomFontSelected()) {
+              fontHeightControls.style.display = "none";
+            } else {
+              fontHeightControls.style.display = "flex";
+            }
+            renderOffscreenText();
+            // Re-center on font change
+            panX =
+              previewContainer.offsetWidth / 2 -
+              (offscreenCanvas.width * zoomLevel) / 2;
+            panY =
+              previewContainer.offsetHeight / 2 -
+              (offscreenCanvas.height * zoomLevel) / 2;
+            drawPreview();
+          });
 
-      // Event listeners for font switching buttons
-      prevFontBtn.addEventListener("click", () => {
-        const options = Array.from(fontSelect.options);
-        const currentIndex = options.findIndex(
-          (option) => option.value === fontSelect.value
-        );
-        const newIndex = (currentIndex - 1 + options.length) % options.length;
-        fontSelect.value = options[newIndex].value;
-        fontSelect.dispatchEvent(new Event("change"));
-      });
+          // Event listeners for font switching buttons
+          prevFontBtn.addEventListener("click", () => {
+            const options = Array.from(fontSelect.options);
+            const currentIndex = options.findIndex(
+              (option) => option.value === fontSelect.value
+            );
+            const newIndex =
+              (currentIndex - 1 + options.length) % options.length;
+            fontSelect.value = options[newIndex].value;
+            fontSelect.dispatchEvent(new Event("change"));
+          });
 
-      nextFontBtn.addEventListener("click", () => {
-        const options = Array.from(fontSelect.options);
-        const currentIndex = options.findIndex(
-          (option) => option.value === fontSelect.value
-        );
-        const newIndex = (currentIndex + 1) % options.length;
-        fontSelect.value = options[newIndex].value;
-        fontSelect.dispatchEvent(new Event("change"));
-      });
+          nextFontBtn.addEventListener("click", () => {
+            const options = Array.from(fontSelect.options);
+            const currentIndex = options.findIndex(
+              (option) => option.value === fontSelect.value
+            );
+            const newIndex = (currentIndex + 1) % options.length;
+            fontSelect.value = options[newIndex].value;
+            fontSelect.dispatchEvent(new Event("change"));
+          });
 
-      // Event listeners for user input
-      textInput.addEventListener("input", () => {
-        renderOffscreenText();
-        drawPreview();
-      });
+          // Event listeners for user input
+          textInput.addEventListener("input", () => {
+            renderOffscreenText();
+            drawPreview();
+          });
 
-      decreaseSizeBtn.addEventListener("click", () => {
-        if (fontHeight > 8) {
-          fontHeight--;
-          fontHeightDisplay.textContent = fontHeight;
+          decreaseSizeBtn.addEventListener("click", () => {
+            if (fontHeight > 8) {
+              fontHeight--;
+              fontHeightDisplay.textContent = fontHeight;
+              renderOffscreenText();
+              drawPreview();
+            }
+          });
+
+          increaseSizeBtn.addEventListener("click", () => {
+            if (fontHeight < 128) {
+              fontHeight++;
+              fontHeightDisplay.textContent = fontHeight;
+              renderOffscreenText();
+              drawPreview();
+            }
+          });
+
+          downloadBtn.addEventListener("click", downloadImage);
+
+          // Panning event listeners
+          previewContainer.addEventListener("mousedown", handleMouseDown);
+          previewContainer.addEventListener("mousemove", handleMouseMove);
+          previewContainer.addEventListener("mouseup", handleMouseUp);
+          previewContainer.addEventListener("mouseleave", handleMouseUp);
+
+          // Touch event listeners for mobile
+          previewContainer.addEventListener("touchstart", handleTouchStart);
+          previewContainer.addEventListener("touchmove", handleTouchMove);
+          previewContainer.addEventListener("touchend", handleTouchEnd);
+
+          // Zoom event listener
+          previewContainer.addEventListener("wheel", handleWheel);
+
+          // Responsive drawing on resize
+          window.addEventListener("resize", () => {
+            // Re-center the view on resize
+            panX =
+              previewContainer.offsetWidth / 2 -
+              (offscreenCanvas.width * zoomLevel) / 2;
+            panY =
+              previewContainer.offsetHeight / 2 -
+              (offscreenCanvas.height * zoomLevel) / 2;
+            drawPreview();
+          });
+
+          // Initial setup and draw
+          textInput.value = "Hello World!";
+          fontSelect.value = "custom-3x5-minifont";
           renderOffscreenText();
+          // Initial centering
+          panX =
+            previewContainer.offsetWidth / 2 -
+            (offscreenCanvas.width * zoomLevel) / 2;
+          panY =
+            previewContainer.offsetHeight / 2 -
+            (offscreenCanvas.height * zoomLevel) / 2;
           drawPreview();
-        }
-      });
-
-      increaseSizeBtn.addEventListener("click", () => {
-        if (fontHeight < 128) {
-          fontHeight++;
-          fontHeightDisplay.textContent = fontHeight;
-          renderOffscreenText();
-          drawPreview();
-        }
-      });
-
-      downloadBtn.addEventListener("click", downloadImage);
-
-      // Panning event listeners
-      previewContainer.addEventListener("mousedown", handleMouseDown);
-      previewContainer.addEventListener("mousemove", handleMouseMove);
-      previewContainer.addEventListener("mouseup", handleMouseUp);
-      previewContainer.addEventListener("mouseleave", handleMouseUp);
-
-      // Touch event listeners for mobile
-      previewContainer.addEventListener("touchstart", handleTouchStart);
-      previewContainer.addEventListener("touchmove", handleTouchMove);
-      previewContainer.addEventListener("touchend", handleTouchEnd);
-
-      // Zoom event listener
-      previewContainer.addEventListener("wheel", handleWheel);
-
-      // Responsive drawing on resize
-      window.addEventListener("resize", () => {
-        // Re-center the view on resize
-        panX =
-          previewContainer.offsetWidth / 2 -
-          (offscreenCanvas.width * zoomLevel) / 2;
-        panY =
-          previewContainer.offsetHeight / 2 -
-          (offscreenCanvas.height * zoomLevel) / 2;
-        drawPreview();
-      });
-
-      // Initial setup and draw on page load
-      window.addEventListener("load", () => {
-        textInput.value = "Hello World!";
-
-        // Select the new custom font by default
-        fontSelect.value = "custom-3x5-minifont";
-        renderOffscreenText();
-        // Initial centering
-        panX =
-          previewContainer.offsetWidth / 2 -
-          (offscreenCanvas.width * zoomLevel) / 2;
-        panY =
-          previewContainer.offsetHeight / 2 -
-          (offscreenCanvas.height * zoomLevel) / 2;
-        drawPreview();
-      });
+        })
+        .catch((error) => console.error("Error loading JSON:", error));
+      // Custom font data provided by the user
     </script>
   </body>
 </html>
-
-
-
