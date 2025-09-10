@@ -770,7 +770,7 @@
           };
 
           // Event listener to handle font selection changes
-          fontSelect.addEventListener("change", () => {
+          const handleFontChange = () => {
             if (isCustomFontSelected()) {
               fontHeightControls.style.display = "none";
             } else {
@@ -785,7 +785,9 @@
               previewContainer.offsetHeight / 2 -
               (offscreenCanvas.height * zoomLevel) / 2;
             drawPreview();
-          });
+          };
+
+          fontSelect.addEventListener("change", handleFontChange);
 
           // Event listeners for font switching buttons
           prevFontBtn.addEventListener("click", () => {
@@ -796,7 +798,7 @@
             const newIndex =
               (currentIndex - 1 + options.length) % options.length;
             fontSelect.value = options[newIndex].value;
-            fontSelect.dispatchEvent(new Event("change"));
+            handleFontChange();
           });
 
           nextFontBtn.addEventListener("click", () => {
@@ -806,7 +808,7 @@
             );
             const newIndex = (currentIndex + 1) % options.length;
             fontSelect.value = options[newIndex].value;
-            fontSelect.dispatchEvent(new Event("change"));
+            handleFontChange();
           });
 
           // Event listeners for alignment buttons
