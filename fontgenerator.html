@@ -52,28 +52,7 @@
             <span>&lt;</span>
           </button>
           <select id="fontSelect" class="control-input flex-grow text-center">
-            <option value="custom-3x5-minifont">3x5 Minifont</option>
-            <option value="custom-font">3x3 Microfont (unicase)</option>
-            <option value="'VT323', monospace">VT323</option>
-            <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
-            <option value="'Space Mono', monospace">Space Mono</option>
-            <option value="'Inconsolata', monospace">Inconsolata</option>
-            <option value="'Cousine', monospace">Cousine</option>
-            <option value="'Source Code Pro', monospace">
-              Source Code Pro
-            </option>
-            <option value="'Roboto Mono', monospace">Roboto Mono</option>
-            <option value="'Fira Code', monospace">Fira Code</option>
-            <option value="'Press Start 2P', cursive">Press Start 2P</option>
-            <option value="'Pixelify Sans', sans-serif">Pixelify Sans</option>
-            <option value="'DotGothic16', sans-serif">DotGothic16</option>
-            <option value="'Cutive Mono', monospace">Cutive Mono</option>
-            <option value="'Fugaz One', sans-serif">Fugaz One</option>
-            <option value="'Orbitron', sans-serif">Orbitron</option>
-            <option value="'Oswald', sans-serif">Oswald</option>
-            <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
-            <option value="monospace">Monospace (System)</option>
-            <option value="Courier New, monospace">Courier New</option>
+            <!-- Options will be populated by JavaScript -->
           </select>
           <button
             id="nextFontBtn"
@@ -257,6 +236,47 @@
           const alignmentControls =
             document.getElementById("alignmentControls");
 
+          // Dynamically populate font options from the loaded JSON data
+          for (const key in fontBundle) {
+            const option = document.createElement("option");
+            option.value = `custom-${key}`;
+            option.textContent = key;
+            fontSelect.appendChild(option);
+          }
+          // Add other web fonts
+          const webFonts = [
+            { name: "VT323", value: "'VT323', monospace" },
+            { name: "IBM Plex Mono", value: "'IBM Plex Mono', monospace" },
+            { name: "Space Mono", value: "'Space Mono', monospace" },
+            { name: "Inconsolata", value: "'Inconsolata', monospace" },
+            { name: "Cousine", value: "'Cousine', monospace" },
+            {
+              name: "Source Code Pro",
+              value: "'Source Code Pro', monospace",
+            },
+            { name: "Roboto Mono", value: "'Roboto Mono', monospace" },
+            { name: "Fira Code", value: "'Fira Code', monospace" },
+            {
+              name: "Press Start 2P",
+              value: "'Press Start 2P', cursive",
+            },
+            { name: "Pixelify Sans", value: "'Pixelify Sans', sans-serif" },
+            { name: "DotGothic16", value: "'DotGothic16', sans-serif" },
+            { name: "Cutive Mono", value: "'Cutive Mono', monospace" },
+            { name: "Fugaz One", value: "'Fugaz One', sans-serif" },
+            { name: "Orbitron", value: "'Orbitron', sans-serif" },
+            { name: "Oswald", value: "'Oswald', sans-serif" },
+            { name: "Bebas Neue", value: "'Bebas Neue', sans-serif" },
+            { name: "Monospace (System)", value: "monospace" },
+            { name: "Courier New", value: "Courier New, monospace" },
+          ];
+          webFonts.forEach((font) => {
+            const option = document.createElement("option");
+            option.value = font.value;
+            option.textContent = font.name;
+            fontSelect.appendChild(option);
+          });
+
           // Create an offscreen canvas to handle the base text rendering
           const offscreenCanvas = document.createElement("canvas");
           const offscreenCtx = offscreenCanvas.getContext("2d");
@@ -317,11 +337,17 @@
 
             if (is2D) {
               // 2D array format: [[0, 1, 0], [1, 0, 1]]
-              charWidth = referenceChar[0].length;
               charHeight = referenceChar.length;
+              if (charHeight > 0) {
+                charWidth = referenceChar.reduce(
+                  (max, row) => Math.max(max, row.length),
+                  0
+                );
+              } else {
+                charWidth = 0;
+              }
             } else {
               // 1D array format: [0, 1, 0, 1, 0, 1]
-              // We need to infer the height from the font type.
               const fontName = Object.keys(fontBundle).find(
                 (key) => fontBundle[key] === fontData
               );
@@ -357,7 +383,7 @@
                     for (let y = 0; y < charHeight; y++) {
                       // Accessing data based on format (1D vs 2D)
                       const pixelValue = is2D
-                        ? charData[y][x]
+                        ? charData[y]?.[x] // Use optional chaining to prevent error
                         : charData[y * charWidth + x];
                       if (pixelValue) {
                         isColumnEmpty = false;
@@ -416,7 +442,7 @@
                     let isColumnEmpty = true;
                     for (let y = 0; y < charHeight; y++) {
                       const pixelValue = is2D
-                        ? charData[y][x]
+                        ? charData[y]?.[x] // Use optional chaining to prevent error
                         : charData[y * charWidth + x];
                       if (pixelValue) {
                         isColumnEmpty = false;
@@ -427,7 +453,7 @@
                     if (!isColumnEmpty) {
                       for (let y = 0; y < charHeight; y++) {
                         const pixelValue = is2D
-                          ? charData[y][x]
+                          ? charData[y]?.[x] // Use optional chaining
                           : charData[y * charWidth + x];
                         if (pixelValue) {
                           offscreenCtx.fillStyle = "black";
@@ -459,10 +485,9 @@
 
             if (isCustomFontSelected()) {
               fontHeightControls.style.display = "none";
+              const fontKey = selectedFont.replace("custom-", "");
               pixelCount = renderPixelFont(
-                selectedFont === "custom-font"
-                  ? fontBundle.Microfont3x3
-                  : fontBundle.threeXFiveMinifont,
+                fontBundle[fontKey],
                 text,
                 currentAlignment
               );
@@ -882,7 +907,7 @@
 
           // Initial setup and draw
           textInput.value = "Hello World!";
-          fontSelect.value = "custom-3x5-minifont";
+          fontSelect.value = "custom-threeXFiveMinifont";
           renderOffscreenText();
           // Initial centering
           panX =
