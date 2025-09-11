@@ -1,2 +1,2 @@
 # pixel-font
-pixel font generator
+1-bit pixel text generator with custom fonts
