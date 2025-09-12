@@ -61,7 +61,7 @@
           </button>
         </div>
 
-        <!-- Font Height Controls -->
+        <!-- Font Height Controls (for web fonts) -->
         <div
           id="fontHeightControls"
           class="w-full md:w-1/2 flex items-center justify-center gap-2"
@@ -83,6 +83,27 @@
           >
             +
           </button>
+        </div>
+
+        <!-- Font Scale Controls (for custom fonts) -->
+        <div
+          id="fontScaleControls"
+          class="w-full md:w-1/2 flex items-center justify-center gap-2 hidden"
+        >
+          <label class="text-lg font-semibold text-gray-400 min-w-[70px]"
+            >Scale:</label
+          >
+          <input
+            type="range"
+            id="fontScaleRange"
+            min="1"
+            max="16"
+            value="1"
+            class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+          />
+          <span id="fontScaleDisplay" class="text-xl font-bold text-center w-8"
+            >1</span
+          >
         </div>
 
         <!-- Alignment Controls -->
