@@ -20,6 +20,9 @@ fetch("fonts.json")
     const pixelCountText = document.getElementById("pixelCount");
     const previewContainer = document.getElementById("previewContainer");
     const alignmentControls = document.getElementById("alignmentControls");
+    const fontScaleControls = document.getElementById("fontScaleControls");
+    const fontScaleRange = document.getElementById("fontScaleRange");
+    const fontScaleDisplay = document.getElementById("fontScaleDisplay");
 
     // Dynamically populate font options from the loaded JSON data
     for (const key in fontBundle) {
@@ -71,6 +74,7 @@ fetch("fonts.json")
     const maxZoom = 15;
     const minZoom = 1;
     let fontHeight = 16; // State variable for font height
+    let customFontScale = 1; // New state variable for custom font scale
 
     let panX = 0;
     let panY = 0;
@@ -93,6 +97,7 @@ fetch("fonts.json")
      * @param {object} fontData The font data object containing character definitions.
      * @param {string} text The text to render.
      * @param {string} alignment The text alignment ('left', 'center', 'right').
+     * @param {number} scale The uniform scaling factor.
      * @param {number} charSpacing The spacing between characters.
      * @param {number} lineSpacing The spacing between lines.
      * @returns {number} The total number of black pixels rendered.
@@ -101,6 +106,7 @@ fetch("fonts.json")
       fontData,
       text,
       alignment,
+      scale = 1,
       charSpacing = 1,
       lineSpacing = 1
     ) => {
@@ -150,7 +156,11 @@ fetch("fonts.json")
           if (!charData) continue;
 
           let charRenderWidth = 0;
-          let tempCharWidth = is2D ? charData[0].length : charWidth;
+          let tempCharWidth = is2D
+            ? charData[0]
+              ? charData[0].length
+              : 0
+            : charWidth;
           if (char === " ") {
             charRenderWidth = 2; // Fixed space width
           } else {
@@ -185,9 +195,9 @@ fetch("fonts.json")
         charRenderData.push({ chars: lineChars, width: lineWidth });
       });
 
-      const totalWidth = maxRenderedLineWidth;
+      const totalWidth = maxRenderedLineWidth * scale;
       const totalHeight =
-        lines.length * (charHeight + lineSpacing) - lineSpacing;
+        (lines.length * (charHeight + lineSpacing) - lineSpacing) * scale;
 
       offscreenCanvas.width = totalWidth;
       offscreenCanvas.height = totalHeight;
@@ -197,7 +207,7 @@ fetch("fonts.json")
       let currentY = 0;
 
       charRenderData.forEach((lineData, i) => {
-        const lineWidth = lineData.width;
+        const lineWidth = lineData.width * scale;
         let xOffset = 0;
         // Calculate xOffset based on alignment
         if (alignment === "center") {
@@ -211,49 +221,57 @@ fetch("fonts.json")
 
         let currentX = xOffset;
         lineData.chars.forEach((char) => {
-          let pixelXOffset = 0;
-          if (char.data === fontData[" "]) {
-            pixelXOffset = 2;
-          } else {
-            const tempCharWidth = char.is2D ? char.data[0].length : charWidth;
-            let startCol = -1;
-            let endCol = -1;
-            for (let x = 0; x < tempCharWidth; x++) {
-              for (let y = 0; y < char.data.length; y++) {
-                const pixelValue = char.is2D
-                  ? char.data[y]?.[x]
-                  : char.data[y * tempCharWidth + x];
-                if (pixelValue === 1) {
-                  if (startCol === -1) startCol = x;
-                  endCol = x;
-                }
-              }
-            }
+          const charData = char.data;
+          const tempCharWidth = char.is2D
+            ? charData[0]
+              ? charData[0].length
+              : 0
+            : charWidth;
 
-            for (let x = 0; x < tempCharWidth; x++) {
-              if (x >= startCol && x <= endCol) {
-                for (let y = 0; y < char.data.length; y++) {
-                  const pixelValue = char.is2D
-                    ? char.data[y]?.[x]
-                    : char.data[y * tempCharWidth + x];
-                  if (pixelValue === 1) {
-                    offscreenCtx.fillStyle = "black";
-                    offscreenCtx.fillRect(
-                      currentX + pixelXOffset,
-                      currentY + y,
-                      1,
-                      1
-                    );
-                    blackPixelCount++;
-                  }
-                }
-                pixelXOffset++;
+          // Find the start and end columns for this specific character
+          let startCol = -1;
+          let endCol = -1;
+          for (let x = 0; x < tempCharWidth; x++) {
+            for (let y = 0; y < charData.length; y++) {
+              const pixelValue = char.is2D
+                ? charData[y]?.[x]
+                : charData[y * tempCharWidth + x];
+              if (pixelValue === 1) {
+                if (startCol === -1) startCol = x;
+                endCol = x;
               }
             }
           }
-          currentX += pixelXOffset + charSpacing;
+
+          // Render the pixels within the character's bounding box
+          if (startCol !== -1 && endCol !== -1) {
+            for (let x = startCol; x <= endCol; x++) {
+              for (let y = 0; y < charData.length; y++) {
+                const pixelValue = char.is2D
+                  ? charData[y]?.[x]
+                  : charData[y * tempCharWidth + x];
+                if (pixelValue === 1) {
+                  // This is the core logic: a single pixel from the font data is rendered as an n x n square.
+                  offscreenCtx.fillStyle = "black";
+                  offscreenCtx.fillRect(
+                    currentX + (x - startCol) * scale,
+                    currentY + y * scale,
+                    scale,
+                    scale
+                  );
+                  // Update pixel count based on the scaled square
+                  blackPixelCount += scale * scale;
+                }
+              }
+            }
+          } else if (char.data === fontData[" "]) {
+            // Handle spaces specifically
+          }
+
+          // Advance the drawing position for the next character
+          currentX += (char.width + charSpacing) * scale;
         });
-        currentY += charHeight + lineSpacing;
+        currentY += (charHeight + lineSpacing) * scale;
       });
       return blackPixelCount;
     };
@@ -266,14 +284,17 @@ fetch("fonts.json")
 
       if (isCustomFontSelected()) {
         fontHeightControls.style.display = "none";
+        fontScaleControls.style.display = "flex";
         const fontKey = selectedFont.replace("custom-", "");
         pixelCount = renderPixelFont(
           fontBundle[fontKey],
           text,
-          currentAlignment
+          currentAlignment,
+          customFontScale
         );
       } else {
         fontHeightControls.style.display = "flex";
+        fontScaleControls.style.display = "none";
         const fontStyle = fontSelect.value;
         const lines = text.split("\n");
 
@@ -579,8 +600,10 @@ fetch("fonts.json")
     const handleFontChange = () => {
       if (isCustomFontSelected()) {
         fontHeightControls.style.display = "none";
+        fontScaleControls.style.display = "flex";
       } else {
         fontHeightControls.style.display = "flex";
+        fontScaleControls.style.display = "none";
       }
       renderOffscreenText();
       // Re-center on font change
@@ -639,6 +662,7 @@ fetch("fonts.json")
       drawPreview();
     });
 
+    // Event listeners for font height controls
     decreaseSizeBtn.addEventListener("click", () => {
       if (fontHeight > 8) {
         fontHeight--;
@@ -655,6 +679,14 @@ fetch("fonts.json")
         renderOffscreenText();
         drawPreview();
       }
+    });
+
+    // Event listener for font scale range slider
+    fontScaleRange.addEventListener("input", (event) => {
+      customFontScale = parseInt(event.target.value);
+      fontScaleDisplay.textContent = customFontScale;
+      renderOffscreenText();
+      drawPreview();
     });
 
     downloadBtn.addEventListener("click", downloadImage);
@@ -699,4 +731,3 @@ fetch("fonts.json")
     drawPreview();
   })
   .catch((error) => console.error("Error loading JSON:", error));
-// Custom font data provided by the user
